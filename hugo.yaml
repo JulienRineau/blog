@@ -8,7 +8,7 @@ params:
   homeInfoParams:
     Title: "\U0001F44B Hi welcome to my page "
     Content: >-
-      This blog is meant to documents my experiements on robotic, LLMs, Vision and other AI related subject. I'm working as a Machine Leanring Engineer at Helm.ai and work on the side at the UC Berkeley Hybrid Robotic Lab.  
+      This blog is meant to documents my experiements on robotic, LLMs, Vision and other AI related subject. I'm working as a Machine Leanring Engineer at Helm.ai and do some research on the side at UC Berkeley's Hybrid Robotic Lab.  
   socialIcons:
     - name: email
       url: 'julien.rineau@berkeley.edu'
