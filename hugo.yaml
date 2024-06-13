@@ -34,3 +34,5 @@ menu:
     name: Blog
     url: /posts/
     weight: 20
+
+enableEmoji: true
