@@ -1,0 +1,36 @@
+baseURL: https://example.org/
+languageCode: en-us
+title: Julien's Experiements
+theme: PaperMod
+
+params:
+  defaultTheme: dark
+  homeInfoParams:
+    Title: "\U0001F44B Hi welcome to my page "
+    Content: >-
+      This blog is meant to documents my experiements on robotic, LLMs, Vision and other AI related subject. I'm working as a Machine Leanring Engineer at Helm.ai and work on the side at the UC Berkeley Hybrid Robotic Lab.  
+  socialIcons:
+    - name: email
+      url: 'julien.rineau@berkeley.edu'
+    - name: twitter
+      url: https://x.com/julienrineau_?s=21&t=rXmba87rN9oIOcKX5c6Cmw
+    - name: linkedin
+      url: www.linkedin.com/in/jrineau
+
+assets:
+  favicon16x16: /assets/favicon.png
+  favicon32x32: /assets/favicon.png
+  apple_touch_icon: /assets/apple-touch-icon.png
+
+favicon: favicon.ico
+
+menu:
+  main:
+  - identifier: home
+    name: Home
+    url: /
+    weight: 10
+  - identifier: posts
+    name: Blog
+    url: /posts/
+    weight: 20
