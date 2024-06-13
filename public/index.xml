@@ -6,8 +6,15 @@
     <description>Recent content on Julien&#39;s Experiements</description>
     <generator>Hugo -- 0.127.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 12 Jun 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 13 Jun 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>RT2-light</title>
+      <link>http://localhost:1313/posts/rt2-light/</link>
+      <pubDate>Thu, 13 Jun 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/rt2-light/</guid>
+      <description>TBD</description>
+    </item>
     <item>
       <title>GPT-Lightning</title>
       <link>http://localhost:1313/posts/gpt-lightning/</link>
