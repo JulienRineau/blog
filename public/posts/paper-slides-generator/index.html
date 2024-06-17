@@ -5,9 +5,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>Paper Slides Generator | Julien&#39;s Experiements</title>
+<title>Paper Presentations Generator | Julien Rineau</title>
 <meta name="keywords" content="">
-<meta name="description" content="TBD">
+<meta name="description" content="A summer project in which I built an app that generate video presentations with voice of a scientific paper because keeping up with daily papers take too much time. I plan to automatically publish it on X so everyone can enjoy it but in the meantime ppl can just fork the repo and replicate run it locally.
+Code Repository
+The Stack The backend stack used is:
+GPT4-V for paper understanding Unstructured.">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/paper-slides-generator/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
@@ -28,6 +31,23 @@
 
     </style>
 </noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css"
+    integrity="sha384-wcIxkf4k558AjM3Yz3BBFQUbk/zgIYC2R0QpeeYb+TwlBVMrlgLqwRjRtGZiK7ww" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"
+    integrity="sha384-hIoBPJpTUs74ddyc4bFZSM1TVlQDA60VBbJS0oA934VSz82sBx1X7kSx2ATBDIyd" crossorigin="anonymous">
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+    integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body, 
+              {
+                  delimiters: [
+                      {left: '$$', right: '$$', display: true},
+                      {left: '\\[', right: '\\]', display: true},
+                      {left: '$', right: '$', display: false},
+                      {left: '\\(', right: '\\)', display: false}
+                  ]
+              }
+    );"></script>
+
 </head>
 
 <body class=" dark" id="top">
@@ -41,7 +61,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Julien&#39;s Experiements (Alt + H)">Julien&#39;s Experiements</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Julien Rineau (Alt + H)">Julien Rineau</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -66,16 +86,6 @@
             </div>
         </div>
         <ul id="menu">
-            <li>
-                <a href="http://localhost:1313/" title="Home">
-                    <span>Home</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/posts/" title="Blog">
-                    <span>Blog</span>
-                </a>
-            </li>
         </ul>
     </nav>
 </header>
@@ -85,14 +95,39 @@
   <header class="post-header">
     
     <h1 class="post-title entry-hint-parent">
-      Paper Slides Generator
+      Paper Presentations Generator
     </h1>
-    <div class="post-meta"><span title='2024-03-10 00:00:00 +0000 UTC'>March 10, 2024</span>
+    <div class="post-meta"><span title='2023-07-30 00:00:00 +0000 UTC'>July 30, 2023</span>
 
 </div>
-  </header> 
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
 
-  <div class="post-content"><p>TBD</p>
+        <div class="inner"><ul>
+                <li>
+                    <a href="#the-stack" aria-label="The Stack">The Stack</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>A summer project in which I built an app that generate video presentations with voice of a scientific paper because keeping up with daily papers take too much time. I plan to automatically publish it on X so everyone can enjoy it but in the meantime ppl can just fork the repo and replicate run it locally.</p>
+<p><a href="https://github.com/JulienRineau/unet-segmentation">Code Repository</a></p>
+<h2 id="the-stack">The Stack<a hidden class="anchor" aria-hidden="true" href="#the-stack">#</a></h2>
+<p>The backend stack used is:</p>
+<ul>
+<li><strong>GPT4-V</strong> for paper understanding</li>
+<li><strong>Unstructured.io</strong> for images extractions</li>
+<li><strong>Whisper</strong> for speech</li>
+<li><strong>Reveal.js</strong> for presentations</li>
+<li><strong>Movie.py</strong> for the video and text superposition</li>
+<li><strong>Flask</strong> for serving</li>
+</ul>
+<p>The front end stack is just <strong>Next.js</strong> with <strong>Tailwind.css</strong>.</p>
 
 
   </div>
@@ -105,7 +140,7 @@
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">Julien&#39;s Experiements</a></span> · 
+        <span>&copy; 2024 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
 
     <span>
         Powered by

@@ -5,9 +5,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
-<title>Posts | Julien&#39;s Experiements</title>
+<title>Posts | Julien Rineau</title>
 <meta name="keywords" content="">
-<meta name="description" content="Posts - Julien&#39;s Experiements">
+<meta name="description" content="Posts - Julien Rineau">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
@@ -29,6 +29,23 @@
 
     </style>
 </noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css"
+    integrity="sha384-wcIxkf4k558AjM3Yz3BBFQUbk/zgIYC2R0QpeeYb+TwlBVMrlgLqwRjRtGZiK7ww" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"
+    integrity="sha384-hIoBPJpTUs74ddyc4bFZSM1TVlQDA60VBbJS0oA934VSz82sBx1X7kSx2ATBDIyd" crossorigin="anonymous">
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+    integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body, 
+              {
+                  delimiters: [
+                      {left: '$$', right: '$$', display: true},
+                      {left: '\\[', right: '\\]', display: true},
+                      {left: '$', right: '$', display: false},
+                      {left: '\\(', right: '\\)', display: false}
+                  ]
+              }
+    );"></script>
+
 </head>
 
 <body class="list dark" id="top">
@@ -42,7 +59,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="http://localhost:1313/" accesskey="h" title="Julien&#39;s Experiements (Alt + H)">Julien&#39;s Experiements</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Julien Rineau (Alt + H)">Julien Rineau</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -67,16 +84,6 @@
             </div>
         </div>
         <ul id="menu">
-            <li>
-                <a href="http://localhost:1313/" title="Home">
-                    <span>Home</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/posts/" title="Blog">
-                    <span class="active">Blog</span>
-                </a>
-            </li>
         </ul>
     </nav>
 </header>
@@ -89,39 +96,71 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">GPT2-Lightning
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>A nano-GPT implementation with Pytorch Lightning. The goal is to have a clean building block for other research projects by containing just enough manual implementation do be easily modifiable, but also by using common tools to have a painless training and nice monitoring. Its contains the code to train the model, prepare the dataset and run evals. This page also details results I got training on HF’s FineWeb-Edu.
-Here is a chart showing how the training loss decreased over time:...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-06-12 00:00:00 +0000 UTC'>June 12, 2024</span></footer>
-  <a class="entry-link" aria-label="post link to GPT2-Lightning" href="http://localhost:1313/posts/gpt2-lightning/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
     <h2 class="entry-hint-parent">Diffusion Policy for Robot Manipulation
     </h2>
   </header>
   <div class="entry-content">
     <p>TBD</p>
   </div>
-  <footer class="entry-footer"><span title='2024-05-12 00:00:00 +0000 UTC'>May 12, 2024</span></footer>
+  <footer class="entry-footer"><span title='2024-06-16 00:00:00 +0000 UTC'>June 16, 2024</span></footer>
   <a class="entry-link" aria-label="post link to Diffusion Policy for Robot Manipulation" href="http://localhost:1313/posts/diffusion-policy/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">Paper Slides Generator
+    <h2 class="entry-hint-parent">Qwen2 Instruction Tuning with LoRA
     </h2>
   </header>
   <div class="entry-content">
-    <p>TBD</p>
+    <p>A clean pipeline for fine-tuning that can be reused for other project. It does not used HF or Axolotl (will do in another project) to have something more modular. I’m choosing Qwen2-7B because at the time of writing its the latest lightweight model that outperform Llama3-8B on most benchmarks.
+Code Repository
+Dataset I used the Alpaca-GPT4 dataset from Stanford that contains 52K instruction-following data generated by GPT-4. Each row of the dataset contains an instruction, an optional input that provide context, and an output:...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-03-10 00:00:00 +0000 UTC'>March 10, 2024</span></footer>
-  <a class="entry-link" aria-label="post link to Paper Slides Generator" href="http://localhost:1313/posts/paper-slides-generator/"></a>
+  <footer class="entry-footer"><span title='2024-06-10 00:00:00 +0000 UTC'>June 10, 2024</span></footer>
+  <a class="entry-link" aria-label="post link to Qwen2 Instruction Tuning with LoRA" href="http://localhost:1313/posts/qwen-rlhf/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">GPT-2 Lightning implementation
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>A nano-GPT implementation with Pytorch Lightning. The goal is to have a clean building block for other research projects by containing just enough manual implementation do be easily modifiable, but also by using common tools to have a painless optimized training and nice monitoring. Its contains the code to train the model, prepare the dataset and run evals. This page also details results I got training on HF’s FineWeb-Edu.
+Code Repository...</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-11-12 00:00:00 +0000 UTC'>November 12, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to GPT-2 Lightning implementation" href="http://localhost:1313/posts/gpt-lightning/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">U-Net Segmentation
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>A simple Pytroch U-net implementation. The goal is to have an clean building block that can be used in other bigger projects (e.g. Diffusion). The net is tested with a segmentation task on the MIT scene-parse-150 dataset.
+Code Repository
+Architechture My implementation is based on the graph above:
+8 double-conv blocks with batch-norm and GELU for activation 4 skip connections </p>
+  </div>
+  <footer class="entry-footer"><span title='2023-09-13 00:00:00 +0000 UTC'>September 13, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to U-Net Segmentation" href="http://localhost:1313/posts/unet-segmentation/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">Paper Presentations Generator
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>A summer project in which I built an app that generate video presentations with voice of a scientific paper because keeping up with daily papers take too much time. I plan to automatically publish it on X so everyone can enjoy it but in the meantime ppl can just fork the repo and replicate run it locally.
+Code Repository
+The Stack The backend stack used is:
+GPT4-V for paper understanding Unstructured....</p>
+  </div>
+  <footer class="entry-footer"><span title='2023-07-30 00:00:00 +0000 UTC'>July 30, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to Paper Presentations Generator" href="http://localhost:1313/posts/paper-slides-generator/"></a>
 </article>
 
 <article class="post-entry"> 
@@ -132,25 +171,26 @@ Here is a chart showing how the training loss decreased over time:...</p>
   <div class="entry-content">
     <p>TBD</p>
   </div>
-  <footer class="entry-footer"><span title='2023-05-05 00:00:00 +0000 UTC'>May 5, 2023</span></footer>
+  <footer class="entry-footer"><span title='2023-06-25 00:00:00 +0000 UTC'>June 25, 2023</span></footer>
   <a class="entry-link" aria-label="post link to RL Policy for Robot Locomotion" href="http://localhost:1313/posts/rl-policy/"></a>
 </article>
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">Ball Balancing Robot
+    <h2 class="entry-hint-parent">MPC Ball Balancing Robot
     </h2>
   </header>
   <div class="entry-content">
-    <p>TBD</p>
+    <p>Control a ball on a plate using a robotic manipulator and a MPC controller. This project was carried out as part of the CS206B Robotic Manipulation and Interaction course at UC Berkeley
+MPC Controller MPC is a type of feedback control algorithm, in which a model of the system is used to make predictions about it’s future behavior. The control inputs are then computed based on the predictions, with the goal of achieving the desired system behavior....</p>
   </div>
-  <footer class="entry-footer"><span title='1970-01-01 00:00:00 +0000 UTC'>January 1, 1970</span></footer>
-  <a class="entry-link" aria-label="post link to Ball Balancing Robot" href="http://localhost:1313/posts/ball-balancing-robot/"></a>
+  <footer class="entry-footer"><span title='2023-03-25 00:00:00 +0000 UTC'>March 25, 2023</span></footer>
+  <a class="entry-link" aria-label="post link to MPC Ball Balancing Robot" href="http://localhost:1313/posts/ball-balancing-robot/"></a>
 </article>
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">Julien&#39;s Experiements</a></span> · 
+        <span>&copy; 2024 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
 
     <span>
         Powered by

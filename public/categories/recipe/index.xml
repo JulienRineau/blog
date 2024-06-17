@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Recipe on Julien Rineau</title>
+    <link>http://localhost:1313/categories/recipe/</link>
+    <description>Recent content in Recipe on Julien Rineau</description>
+    <generator>Hugo -- 0.127.0</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 12 Nov 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/recipe/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GPT-2 Lightning implementation</title>
+      <link>http://localhost:1313/posts/gpt-lightning/</link>
+      <pubDate>Sun, 12 Nov 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/gpt-lightning/</guid>
+      <description>A nano-GPT implementation with Pytorch Lightning. The goal is to have a clean building block for other research projects by containing just enough manual implementation do be easily modifiable, but also by using common tools to have a painless optimized training and nice monitoring. Its contains the code to train the model, prepare the dataset and run evals. This page also details results I got training on HF&amp;rsquo;s FineWeb-Edu.
+Code Repository</description>
+    </item>
+  </channel>
+</rss>

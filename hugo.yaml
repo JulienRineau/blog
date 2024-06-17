@@ -1,21 +1,23 @@
 baseURL: https://example.org/
 languageCode: en-us
-title: Julien's Experiements
+title: Julien Rineau
 theme: PaperMod
 
 params:
+  math: true
   defaultTheme: dark
   homeInfoParams:
     Title: "\U0001F44B Hi welcome to my page "
     Content: >-
-      This blog is meant to documents my experiements on robotic, LLMs, Vision and other AI related subject. I'm working as a Machine Leanring Engineer at Helm.ai and do some research on the side at UC Berkeley's Hybrid Robotic Lab.  
+      This blog is meant to document my experiments on Robotic, LLMs, Vision and other AI related subjects. I hold a Master in Mechanical Engineering from UC Berkeley and now work as Machine Learning Engineer on vision models for self-driving at Helm.ai. I also do some research on the side at UC Berkeley's Hybrid Robotic Lab.  
   socialIcons:
     - name: email
       url: 'julien.rineau@berkeley.edu'
     - name: twitter
       url: https://x.com/julienrineau_?s=21&t=rXmba87rN9oIOcKX5c6Cmw
     - name: linkedin
-      url: www.linkedin.com/in/jrineau
+      url: https://linkedin.com/in/jrineau
+  
 
 assets:
   favicon16x16: /assets/favicon.png
@@ -24,15 +26,16 @@ assets:
 
 favicon: favicon.ico
 
-menu:
-  main:
-  - identifier: home
-    name: Home
-    url: /
-    weight: 10
-  - identifier: posts
-    name: Blog
-    url: /posts/
-    weight: 20
-
 enableEmoji: true
+
+markup:
+  goldmark:
+    extensions:
+      passthrough:
+        delimiters:
+          block:
+          - - \[
+            - \]
+          - - $$
+            - $$
+        enable: true
