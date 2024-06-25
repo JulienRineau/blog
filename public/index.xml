@@ -6,15 +6,8 @@
     <description>Recent content on Julien Rineau</description>
     <generator>Hugo -- 0.127.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 16 Jun 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 10 Jun 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Diffusion Policy for Robot Manipulation</title>
-      <link>http://localhost:1313/posts/diffusion-policy/</link>
-      <pubDate>Sun, 16 Jun 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/diffusion-policy/</guid>
-      <description>TBD</description>
-    </item>
     <item>
       <title>GPT-2 Instruction Tuning with LoRA</title>
       <link>http://localhost:1313/posts/qwen-rlhf/</link>
@@ -43,21 +36,11 @@ Architechture My implementation is based on the graph above:
 8 double-conv blocks with batch-norm and GELU for activation 4 skip connections </description>
     </item>
     <item>
-      <title>Paper Presentations Generator</title>
-      <link>http://localhost:1313/posts/paper-slides-generator/</link>
-      <pubDate>Sun, 30 Jul 2023 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/paper-slides-generator/</guid>
-      <description>A summer project in which I built an app that generate video presentations with voice of a scientific paper because keeping up with daily papers take too much time. I plan to automatically publish it on X so everyone can enjoy it but in the meantime ppl can just fork the repo and replicate run it locally.
-Code Repository
-The Stack The backend stack used is:
-GPT4-V for paper understanding Unstructured.</description>
-    </item>
-    <item>
-      <title>RL Policy for Robot Locomotion</title>
+      <title>RL Policy for Legged Locomotion</title>
       <link>http://localhost:1313/posts/rl-policy/</link>
       <pubDate>Sun, 25 Jun 2023 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/rl-policy/</guid>
-      <description>TBD</description>
+      <description>Quadrupeds robots currently have difficulty overcoming rough terrains, the goal of this project is to improve the agility and robustness of legged locomotion over complex terrain using reinforcement learning. The project consists of implementing the following paper from Nvidia Learning to Walk in Minutes Using Massively Parallel Deep Reinforcement Learning and adapt it to the unitree A1 Problem statement Traditionnaly locomotion is achieve through Optimization algorithms, especially Model Predictive Control (MPC).</description>
     </item>
     <item>
       <title>MPC Ball Balancing Robot</title>
