@@ -1,6 +1,6 @@
 ---
 title: "GPT-2 Instruction Tuning with LoRA"
-date: 2024-06-10
+date: 2024-03-10
 draft: false
 ShowToc: true
 ---
