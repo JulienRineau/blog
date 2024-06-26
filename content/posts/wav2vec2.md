@@ -9,7 +9,7 @@ categories: ["recipe"]
 A Wav2Vec 2.0 implementation using PyTorch Lightning. This project aims to create a clean, modifiable building block for speech reco
 
 
-gnition research. It uses common tools for optimized training and effective monitoring. The implementation includes code for model training, dataset preparation, and evaluation. This page also details the results of pretraining on the LibriSpeech dataset.
+gnition research. It uses common tools for optimized training and effective monitoring. The implementation includes code for model training, dataset preparation, and evaluation. This page also details the results of pretraining on the Libri-Speech dataset.
 
 [Code Repository](https://github.com/JulienRineau/blog)
 
