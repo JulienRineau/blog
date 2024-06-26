@@ -76,9 +76,8 @@ Given that I was renting my GPU I did not ran an hyperparemeter sweep but could 
 ![GPT architechture](/img/gpt-lightning/training_loss_chart.png)
 
 
-Whole training:The whole training lasted Xh 
-
-Here are some prompting results:
+Whole training:
+TBD..
 
 ## How to Use This Implementation
 
