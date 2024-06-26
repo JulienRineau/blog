@@ -14,7 +14,8 @@
       <pubDate>Sun, 12 May 2024 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/wav2vec2/</guid>
       <description>A Wav2Vec 2.0 implementation using PyTorch Lightning. This project aims to create a clean, modifiable building block for speech reco
-gnition research. It uses common tools for optimized training and effective monitoring. The implementation includes code for model training, dataset preparation, and evaluation. This page also details the results of pretraining on the LibriSpeech dataset. Code Repository
+gnition research. It uses common tools for optimized training and effective monitoring. The implementation includes code for model training, dataset preparation, and evaluation. This page also details the results of pretraining on the LibriSpeech dataset.
+Code Repository
 Architecture My implementation closely follows the Wav2Vec 2.0 BASE model architecture:
 768 embedding size 8 attention heads 12 transformer blocks 512 convolutional channels in the feature encoder 2 groups and 320 choices per group in the quantizer This configuration results in approximately 95M parameters.</description>
     </item>
