@@ -14,7 +14,7 @@ Code Repository
 
 
 ## Architecture
-![Wav2Vec architechture](img/wav2vec2/architechture_paper.png)
+![Wav2Vec architechture](/img/wav2vec2/architechture_paper.png)
 My implementation closely follows the Wav2Vec 2.0 BASE model architecture:
 
 - 768 embedding size
