@@ -28,6 +28,13 @@ favicon: favicon.ico
 
 enableEmoji: true
 
+module:
+  mounts:
+  - source: assets
+    target: assets
+  - source: static
+    target: assets
+
 markup:
   goldmark:
     extensions:

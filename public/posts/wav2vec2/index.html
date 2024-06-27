@@ -140,8 +140,7 @@ Architecture My implementation closely follows the Wav2Vec 2.0 BASE model archit
 <p>gnition research. It uses common tools for optimized training and effective monitoring. The implementation includes code for model training, dataset preparation, and evaluation. This page also details the results of pretraining on the Libri-Speech dataset.</p>
 <p><a href="https://github.com/JulienRineau/wav2vec">Code Repository</a></p>
 <h2 id="architecture">Architecture<a hidden class="anchor" aria-hidden="true" href="#architecture">#</a></h2>
-<p><img loading="lazy" src="/img/wav2vec2/architechture_paper.png" alt="Wav2Vec architechture"  />
-
+<p><img alt="Wav2Vec architechture" src="/img/wav2vec2/architechture_paper.png">
 My implementation closely follows the Wav2Vec 2.0 BASE model architecture:</p>
 <ul>
 <li>768 embedding size</li>
@@ -204,8 +203,7 @@ The model processes raw audio waveforms, first through a convolutional feature e
 <li><strong>Gradient Clipping:</strong> Set to 1.0 to prevent exploding gradients.</li>
 <li><strong>DDP (Distributed Data Parallel):</strong> Enables parallel processing on multiple GPUs, significantly accelerating training times.</li>
 <li><strong>Scheduled Learning Rate</strong>: Warmup and cosine annealing like in the GPT-3 paper
-<img loading="lazy" src="/img/wav2vec2/learning_rate.png" alt="Wav2Vec architechture"  />
-</li>
+<img alt="Wav2Vec architechture" src="/img/wav2vec2/learning_rate.png"></li>
 </ul>
 <h3 id="dataset">Dataset<a hidden class="anchor" aria-hidden="true" href="#dataset">#</a></h3>
 <p>For pretraining, we use the LibriSpeech dataset, which consists of about 960 hours of English speech. The dataset is processed in streaming mode to handle large amounts of data efficiently.</p>
@@ -219,8 +217,7 @@ The model processes raw audio waveforms, first through a convolutional feature e
 </figure></p>
 <h3 id="quantization-and-loss">Quantization and Loss<a hidden class="anchor" aria-hidden="true" href="#quantization-and-loss">#</a></h3>
 <p>The model uses a Vector Quantizer to discretize the latent representations. This quantization is crucial for the contrastive loss used in pretraining. The loss function combines a contrastive loss, which identifies the correct quantized representation among distractors, and a diversity loss, which encourages the use of the full codebook.</p>
-<p><img loading="lazy" src="/img/wav2vec2/pq.webp" alt="Quantization"  />
-</p>
+<p><img alt="Quantization" src="/img/wav2vec2/pq.webp"></p>
 <h3 id="pretraining-process">Pretraining Process<a hidden class="anchor" aria-hidden="true" href="#pretraining-process">#</a></h3>
 <p>The pretraining process follows these steps:</p>
 <ul>
