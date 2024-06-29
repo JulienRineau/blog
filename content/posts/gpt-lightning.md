@@ -1,5 +1,5 @@
 ---
-title: "GPT-2 Pretraining Implementation"
+title: "GPT-2 Pretraining with Lightning"
 date: 2023-11-12
 draft: false
 ShowToc: true

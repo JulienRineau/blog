@@ -1,5 +1,5 @@
 ---
-title: "Wav2Vec 2.0 Implementation"
+title: "Wav2Vec 2.0 Implementation from Scratch"
 date: 2024-05-12
 draft: false
 ShowToc: true
