@@ -11,9 +11,9 @@ A nano-GPT implementation with Pytorch Lightning. The goal is to have a clean bu
 [Code Repository](https://github.com/JulienRineau/gpt2-workflow)
 
 
-## Architechture
+## Architecture
 
-![GPT architechture](/img/gpt-lightning/gpt2-architechture.png)
+![GPT Architecture](/img/gpt-lightning/gpt2-architechture.png)
 
 My implementation is identical to the small GPT2 model but without the dropout layers: 
 
@@ -73,7 +73,7 @@ The dataset loader tokenize FineWeb-edu's docs, then process these tokens into f
 
 Given that I was renting my GPU I did not ran an hyperparemeter sweep but could ran some test on a smaller dataset. I constated that while Mixed Precision and DDP increased the speed, the Scheduled Learning Rate had the biggest impact on the loss. 
 
-![GPT architechture](/img/gpt-lightning/training_loss_chart.png)
+![GPT Architecture](/img/gpt-lightning/training_loss_chart.png)
 
 
 Whole training:

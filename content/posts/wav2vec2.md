@@ -1,5 +1,5 @@
 ---
-title: "Wav2Vec 2.0 Implementation from Scratch"
+title: "Wav2Vec 2.0 Implementation From Scratch"
 date: 2024-05-12
 draft: false
 ShowToc: true
@@ -15,7 +15,7 @@ gnition research. It uses common tools for optimized training and effective moni
 
 
 ## Architecture
-![Wav2Vec architechture](/img/wav2vec2/architechture_paper.png)
+![Wav2Vec Architecture](/img/wav2vec2/architechture_paper.png)
 My implementation closely follows the Wav2Vec 2.0 BASE model architecture:
 
 - 768 embedding size
@@ -81,7 +81,7 @@ The implementation incorporates several optimization techniques:
 - **Gradient Clipping:** Set to 1.0 to prevent exploding gradients.
 - **DDP (Distributed Data Parallel):** Enables parallel processing on multiple GPUs, significantly accelerating training times.
 - **Scheduled Learning Rate**: Warmup and cosine annealing like in the GPT-3 paper
-![Wav2Vec architechture](/img/wav2vec2/learning_rate.png)
+![LEarning rate](/img/wav2vec2/learning_rate.png)
 
 
 ### Dataset
@@ -89,8 +89,6 @@ For pretraining, we use the LibriSpeech dataset, which consists of about 960 hou
 
 Example:
 {{<audio src="audio.wav" caption="''Chapter sixteen: I might have told you of the beginning of this liaison in a few lines, but I wanted you to see every step by which we came to agree to whatever Marguerite wished.''">}}
-
-
 
 
 ### Quantization and Loss

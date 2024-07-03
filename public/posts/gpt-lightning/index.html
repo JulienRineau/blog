@@ -106,7 +106,7 @@ Code Repository">
 
         <div class="inner"><ul>
                 <li>
-                    <a href="#architechture" aria-label="Architechture">Architechture</a></li>
+                    <a href="#architecture" aria-label="Architecture">Architecture</a></li>
                 <li>
                     <a href="#training" aria-label="Training">Training</a><ul>
                         
@@ -127,8 +127,8 @@ Code Repository">
 
   <div class="post-content"><p>A nano-GPT implementation with Pytorch Lightning. The goal is to have a clean building block for other research projects by containing just enough manual implementation do be easily modifiable, but also by using common tools to have a painless optimized training and nice monitoring. Its contains the code to train the model, prepare the dataset and run evals. This page also details results I got training on HF&rsquo;s FineWeb-Edu.</p>
 <p><a href="https://github.com/JulienRineau/gpt2-workflow">Code Repository</a></p>
-<h2 id="architechture">Architechture<a hidden class="anchor" aria-hidden="true" href="#architechture">#</a></h2>
-<p><img alt="GPT architechture" src="/img/gpt-lightning/gpt2-architechture.png"></p>
+<h2 id="architecture">Architecture<a hidden class="anchor" aria-hidden="true" href="#architecture">#</a></h2>
+<p><img alt="GPT Architecture" src="/img/gpt-lightning/gpt2-architechture.png"></p>
 <p>My implementation is identical to the small GPT2 model but without the dropout layers:</p>
 <ul>
 <li>50304 vocab size</li>
@@ -178,7 +178,7 @@ Its a causal model so next tokens are mask in the self-attention matrix.</p>
 <p>The dataset loader tokenize FineWeb-edu&rsquo;s docs, then process these tokens into fixed-size chunks based on a predefined sequence length. Each chunk is designed to include an extra token that helps create pairs of inputs and expected outputs. The input consists of a sequence of tokens, and the output is the same sequence shifted by one position.</p>
 <h3 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h3>
 <p>Given that I was renting my GPU I did not ran an hyperparemeter sweep but could ran some test on a smaller dataset. I constated that while Mixed Precision and DDP increased the speed, the Scheduled Learning Rate had the biggest impact on the loss.</p>
-<p><img alt="GPT architechture" src="/img/gpt-lightning/training_loss_chart.png"></p>
+<p><img alt="GPT Architecture" src="/img/gpt-lightning/training_loss_chart.png"></p>
 <p>Whole training:
 TBD..</p>
 <h2 id="how-to-use-this-implementation">How to Use This Implementation<a hidden class="anchor" aria-hidden="true" href="#how-to-use-this-implementation">#</a></h2>

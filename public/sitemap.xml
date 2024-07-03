@@ -17,11 +17,14 @@
     <loc>http://localhost:1313/posts/wav2vec2/</loc>
     <lastmod>2024-05-12T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/posts/qwen-rlhf/</loc>
+    <loc>http://localhost:1313/posts/rlhf/</loc>
     <lastmod>2024-03-10T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/gpt-lightning/</loc>
     <lastmod>2023-11-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/unet-segmentation/</loc>
+    <lastmod>2023-09-13T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/posts/rl-policy/</loc>
     <lastmod>2023-06-25T00:00:00+00:00</lastmod>
