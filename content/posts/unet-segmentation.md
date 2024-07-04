@@ -54,29 +54,29 @@ The **[scene_parse_150](http://sceneparsing.csail.mit.edu)** dataset, part of th
 This dataset is quite heterogenous regarding the image shapes and encoding, some light transformations are thus necessary to be able to train on it
 
 ```python
-    self.image_transform = transforms.Compose(
-        [
-            transforms.Lambda(lambda img: img.convert("RGB")),
-            transforms.Resize(image_size),
-            transforms.Lambda(lambda img: pil_to_tensor(img)),
-            transforms.Lambda(lambda t: t.float() / 255.0),
-        ]
-    )
-    self.mask_transform = transforms.Compose(
-        [
-            transforms.Resize(image_size, interpolation=Image.NEAREST),
-            transforms.Lambda(lambda img: pil_to_tensor(img)),
-        ]
-    )
+self.image_transform = transforms.Compose(
+    [
+        transforms.Lambda(lambda img: img.convert("RGB")),
+        transforms.Resize(image_size),
+        transforms.Lambda(lambda img: pil_to_tensor(img)),
+        transforms.Lambda(lambda t: t.float() / 255.0),
+    ]
+)
+self.mask_transform = transforms.Compose(
+    [
+        transforms.Resize(image_size, interpolation=Image.NEAREST),
+        transforms.Lambda(lambda img: pil_to_tensor(img)),
+    ]
+)
 ```
 ## Training
 ### Loss
 The dataset contains 150 semantic categories so our model have ```out_channels = 150```. The logits are then shape ```(N, 150, C, H, W)``` and our mask shape ```(N, H, W)``` containing the indices of the associated classes to the pixels. We then use multi-class cross-entropy for the loss:
 ```python
-    image, mask = batch
-    logits = self(image)
-    mask = mask.squeeze(1) 
-    loss = torch.nn.functional.cross_entropy(logits, mask)
+image, mask = batch
+logits = self(image)
+mask = mask.squeeze(1) 
+loss = torch.nn.functional.cross_entropy(logits, mask)
 ``` 
 ### Run
 The goal here is not to actually train the model on the whole dataset but instead to show that the model works. The training is then done on a 1k datapoint subset until the model overfit (200 epochs).
