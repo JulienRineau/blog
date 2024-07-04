@@ -71,11 +71,19 @@ This dataset is quite heterogenous regarding the image shapes and encoding, some
 ```
 ## Training
 ### Loss
-The dataset contains 150 semantic categories
-### Optimization
+The dataset contains 150 semantic categories so our model have ```out_channels = 150```. The logits are then shape ```(N, 150, C, H, W)``` and our mask shape ```(N, H, W)``` containing the indices of the associated classes to the pixels. We then use multi-class cross-entropy for the loss:
+```python
+    image, mask = batch
+    logits = self(image)
+    mask = mask.squeeze(1) 
+    loss = torch.nn.functional.cross_entropy(logits, mask)
+``` 
+### Run
+The goal here is not to actually train the model on the whole dataset but instead to show that the model works. The training is then done on a 1k datapoint subset until the model overfit (200 epochs).
 ![Training accuracy and loss](/img/unet-segmentation/stacked_plot.jpg)
 
 ## Results
+Here are some sample results with the ground truth on the left and the predictions on the right. Given the size of sub-dataset used for training we cannot expect much better 
 ![Results](/img/unet-segmentation/stacked_result.png)
 
 
