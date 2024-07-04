@@ -80,7 +80,9 @@ The dataset contains 150 semantic categories so our model have ```out_channels =
 ``` 
 ### Run
 The goal here is not to actually train the model on the whole dataset but instead to show that the model works. The training is then done on a 1k datapoint subset until the model overfit (200 epochs).
-![Training accuracy and loss](/img/unet-segmentation/stacked_plot.jpg)
+![Training loss](/img/unet-segmentation/train_loss.png)
+![Training accuracy](/img/unet-segmentation/train_acc.png)
+
 
 ## Results
 Here are some sample results with the ground truth on the left and the predictions on the right. Given the size of sub-dataset used for training we cannot expect much better 

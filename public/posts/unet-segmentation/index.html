@@ -202,7 +202,8 @@ A sequence of DoubleConv modules are applied.">
 </span></span><span style="display:flex;"><span>    loss <span style="color:#f92672">=</span> torch<span style="color:#f92672">.</span>nn<span style="color:#f92672">.</span>functional<span style="color:#f92672">.</span>cross_entropy(logits, mask)
 </span></span></code></pre></div><h3 id="run">Run<a hidden class="anchor" aria-hidden="true" href="#run">#</a></h3>
 <p>The goal here is not to actually train the model on the whole dataset but instead to show that the model works. The training is then done on a 1k datapoint subset until the model overfit (200 epochs).
-<img alt="Training accuracy and loss" src="/img/unet-segmentation/stacked_plot.jpg"></p>
+<img alt="Training loss" src="/img/unet-segmentation/train_loss.png">
+<img alt="Training accuracy" src="/img/unet-segmentation/train_acc.png"></p>
 <h2 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h2>
 <p>Here are some sample results with the ground truth on the left and the predictions on the right. Given the size of sub-dataset used for training we cannot expect much better
 <img alt="Results" src="/img/unet-segmentation/stacked_result.png"></p>
