@@ -4,7 +4,7 @@ date: 2023-09-13
 draft: false
 ShowToc: true
 ---
-A simple Pytroch U-Net implementation. The goal is to have an clean building block that can be used in other bigger projects (e.g. Diffusion). The net is tested with a segmentation task on the MIT scene-parse-150 dataset.
+A simple Pytroch U-Net implementation. The goal is to have an clean building block that can be used in other bigger projects (e.g. Diffusion). The model is tested with a segmentation task on the MIT scene-parse-150 dataset.
 
 [Code Repository](https://github.com/JulienRineau/unet-segmentation)
 
@@ -16,23 +16,22 @@ The network is built up as follows:
 
 - The network consists of a downsampling path, a bottleneck, and an upsampling path.
 - In the downsampling path:
-
     - A sequence of DoubleConv modules are applied. Each DoubleConv consists of two convolutional layers, each followed by batch normalization and GELU activation.
     - After each DoubleConv, a max pooling operation is applied to reduce the spatial dimensions.
     - ```python
-        class DoubleConv(nn.Module):
-        def __init__(self, in_channels, out_channels):
-            super(DoubleConv, self).__init__()
-            self.conv = nn.Sequential(
-                nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False),
-                nn.BatchNorm2d(out_channels),
-                nn.GELU(approximate="tanh"),
-                nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
-                nn.GELU(approximate="tanh"),
-            )
+      class DoubleConv(nn.Module):
+          def __init__(self, in_channels, out_channedls):
+              super(DoubleConv, self).__init__()
+              self.conv = nn.Sequential(
+                  nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False),
+                  nn.BatchNorm2d(out_channels),
+                  nn.GELU(approximate="tanh"),
+                  nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
+                  nn.GELU(approximate="tanh"),
+              )
 
-        def forward(self, x):
-            return self.conv(x)
+          def forward(self, x):
+              return self.conv(x)
         ```
 
 
@@ -79,7 +78,7 @@ mask = mask.squeeze(1)
 loss = torch.nn.functional.cross_entropy(logits, mask)
 ``` 
 ### Run
-The goal here is not to actually train the model on the whole dataset but instead to show that the model works. The training is then done on a 1k datapoint subset until the model overfit (200 epochs).
+The goal here is not to actually train the model on the whole dataset but instead to show that the pipeline works. The training is then done on a 1k datapoint subset until the model overfit (200 epochs). It took less than 20min on a single A100 GPU.
 ![Training loss](/img/unet-segmentation/train_loss.png)
 ![Training accuracy](/img/unet-segmentation/train_acc.png)
 
