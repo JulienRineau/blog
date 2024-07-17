@@ -30,6 +30,7 @@ A PyTorch implementation of the Diffusion Transformer (DiT) model. With OpenAI's
     self.adaLN_modulation = nn.Sequential(
     nn.SiLU(), nn.Linear(config.n_embd, 6 * config.n_embd, bias=True))
     ```
+- **MLP:** Transformers struggle with spatial coherence in image tasks, often producing "patchy" outputs. To address this, we add a depth-wise convolution to the FFN layer, as introduced in the [LocalViT paper](https://arxiv.org/pdf/2104.05707). This allows the model to mix information from nearby pixels efficiently, improving spatial awareness and output quality with minimal computational cost.
 - **Modulate:** Performs element-wise modulation of normalized inputs using computed shift and scale parameters. It's used in both DiTBlock and FinalLayer to apply adaptive normalization.
     ```python
     shift, scale = self.adaLN_modulation(c).chunk(6, dim=1)
@@ -37,7 +38,7 @@ A PyTorch implementation of the Diffusion Transformer (DiT) model. With OpenAI's
     ```
 - **SelfAttention:** Multi-head self-attention module. It uses linear layers to project inputs into query, key, and value representations, applies scaled dot-product attention using PyTorch's functional API, and projects the output back to the original embedding dimension.
 - **FinalLayer:** It uses a LayerNorm without affine parameters, computes adaptive normalization parameters via the ```adaLN_modulation``` module, and applies a final linear projection to reshape the output to the desired dimensions.
-- **MLP:** Transformers struggle with spatial coherence in image tasks, often producing "patchy" outputs. To address this, we add a depth-wise convolution to the FFN layer, as introduced in the [LocalViT paper](https://arxiv.org/pdf/2104.05707). This allows the model to mix information from nearby pixels efficiently, improving spatial awareness and output quality with minimal computational cost.
+
 
 
 
@@ -107,13 +108,13 @@ The reverse process is used when generating and image. We directly predict the n
 \[ p_\theta(x_{t-1}|x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 \mathbf{I}) \]
 Where:
 \[ \mu_\theta(x_t, t) = \frac{1}{\sqrt{\alpha_t}}(x_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}t}}\varepsilon_{\theta(x_t, t)}) \]
-The DDPMScheduler handles the computation of $\alpha_t$, $\beta_t$, and $\bar{\alpha}_t$ based on the ```squaredcos_cap_v2``` schedule, ensuring consistency between the forward and reverse processes.
+The ```DDPMScheduler``` handles the computation of $\alpha_t$, $\beta_t$, and $\bar{\alpha}_t$ based on the ```squaredcos_cap_v2``` schedule, ensuring consistency between the forward and reverse processes.
 
 ### Training Objective
 We use the simplified loss:
 \[ \mathcal{L_{\text{simple}}}(\theta) = |\varepsilon_{\theta(x_t, t)} - \varepsilon_{t}|^2 \]
 
-### Implementation with DDPMScheduler
+### Implementation with HF's DDPMScheduler
 In practice, using the DDPMScheduler simplifies our implementation:
 
 1. **Initialization**:
@@ -135,7 +136,7 @@ The scheduler computes the denoised sample given the model's noise prediction:
     ```
 
 ## Results
-The model was trained on a on a 8xA100 cluster for 1h26 with the following hyperparameters:
+The model was trained on a 8xA100 cluster for 1h26 with the following hyperparameters:
 - **Patch size:** 2
 - **Number of DiT blocks:** 12
 - **Number of head:** 12

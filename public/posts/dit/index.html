@@ -130,7 +130,7 @@ Architecture Implementation details Firstlayer: A Python class that initializes 
                 <li>
                     <a href="#training-objective" aria-label="Training Objective">Training Objective</a></li>
                 <li>
-                    <a href="#implementation-with-ddpmscheduler" aria-label="Implementation with DDPMScheduler">Implementation with DDPMScheduler</a></li></ul>
+                    <a href="#implementation-with-hfs-ddpmscheduler" aria-label="Implementation with HF&rsquo;s DDPMScheduler">Implementation with HF&rsquo;s DDPMScheduler</a></li></ul>
                 </li>
                 <li>
                     <a href="#results" aria-label="Results">Results</a>
@@ -162,13 +162,13 @@ Architecture Implementation details Firstlayer: A Python class that initializes 
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>self<span style="color:#f92672">.</span>adaLN_modulation <span style="color:#f92672">=</span> nn<span style="color:#f92672">.</span>Sequential(
 </span></span><span style="display:flex;"><span>nn<span style="color:#f92672">.</span>SiLU(), nn<span style="color:#f92672">.</span>Linear(config<span style="color:#f92672">.</span>n_embd, <span style="color:#ae81ff">6</span> <span style="color:#f92672">*</span> config<span style="color:#f92672">.</span>n_embd, bias<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>))
 </span></span></code></pre></div></li>
+<li><strong>MLP:</strong> Transformers struggle with spatial coherence in image tasks, often producing &ldquo;patchy&rdquo; outputs. To address this, we add a depth-wise convolution to the FFN layer, as introduced in the <a href="https://arxiv.org/pdf/2104.05707">LocalViT paper</a>. This allows the model to mix information from nearby pixels efficiently, improving spatial awareness and output quality with minimal computational cost.</li>
 <li><strong>Modulate:</strong> Performs element-wise modulation of normalized inputs using computed shift and scale parameters. It&rsquo;s used in both DiTBlock and FinalLayer to apply adaptive normalization.
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>shift, scale <span style="color:#f92672">=</span> self<span style="color:#f92672">.</span>adaLN_modulation(c)<span style="color:#f92672">.</span>chunk(<span style="color:#ae81ff">6</span>, dim<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>)
 </span></span><span style="display:flex;"><span>x <span style="color:#f92672">=</span> modulate(self<span style="color:#f92672">.</span>norm_final(x), shift, scale)
 </span></span></code></pre></div></li>
 <li><strong>SelfAttention:</strong> Multi-head self-attention module. It uses linear layers to project inputs into query, key, and value representations, applies scaled dot-product attention using PyTorch&rsquo;s functional API, and projects the output back to the original embedding dimension.</li>
 <li><strong>FinalLayer:</strong> It uses a LayerNorm without affine parameters, computes adaptive normalization parameters via the <code>adaLN_modulation</code> module, and applies a final linear projection to reshape the output to the desired dimensions.</li>
-<li><strong>MLP:</strong> Transformers struggle with spatial coherence in image tasks, often producing &ldquo;patchy&rdquo; outputs. To address this, we add a depth-wise convolution to the FFN layer, as introduced in the <a href="https://arxiv.org/pdf/2104.05707">LocalViT paper</a>. This allows the model to mix information from nearby pixels efficiently, improving spatial awareness and output quality with minimal computational cost.</li>
 </ul>
 <h3 id="classifier-free-guidance">Classifier-free guidance<a hidden class="anchor" aria-hidden="true" href="#classifier-free-guidance">#</a></h3>
 <p>The official implementation uses classifier-free guidance improve the sample quality by combining conditional and unconditional generation. It modifies the denoising process to:
@@ -233,12 +233,12 @@ Where:
 </p>
 \[ \mu_\theta(x_t, t) = \frac{1}{\sqrt{\alpha_t}}(x_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}t}}\varepsilon_{\theta(x_t, t)}) \]
 <p>
-The DDPMScheduler handles the computation of $\alpha_t$, $\beta_t$, and $\bar{\alpha}_t$ based on the <code>squaredcos_cap_v2</code> schedule, ensuring consistency between the forward and reverse processes.</p>
+The <code>DDPMScheduler</code> handles the computation of $\alpha_t$, $\beta_t$, and $\bar{\alpha}_t$ based on the <code>squaredcos_cap_v2</code> schedule, ensuring consistency between the forward and reverse processes.</p>
 <h3 id="training-objective">Training Objective<a hidden class="anchor" aria-hidden="true" href="#training-objective">#</a></h3>
 <p>We use the simplified loss:
 </p>
 \[ \mathcal{L_{\text{simple}}}(\theta) = |\varepsilon_{\theta(x_t, t)} - \varepsilon_{t}|^2 \]
-<h3 id="implementation-with-ddpmscheduler">Implementation with DDPMScheduler<a hidden class="anchor" aria-hidden="true" href="#implementation-with-ddpmscheduler">#</a></h3>
+<h3 id="implementation-with-hfs-ddpmscheduler">Implementation with HF&rsquo;s DDPMScheduler<a hidden class="anchor" aria-hidden="true" href="#implementation-with-hfs-ddpmscheduler">#</a></h3>
 <p>In practice, using the DDPMScheduler simplifies our implementation:</p>
 <ol>
 <li>
@@ -258,7 +258,7 @@ The scheduler computes the denoised sample given the model&rsquo;s noise predict
 </span></span></code></pre></div></li>
 </ol>
 <h2 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h2>
-<p>The model was trained on a on a 8xA100 cluster for 1h26 with the following hyperparameters:</p>
+<p>The model was trained on a 8xA100 cluster for 1h26 with the following hyperparameters:</p>
 <ul>
 <li><strong>Patch size:</strong> 2</li>
 <li><strong>Number of DiT blocks:</strong> 12</li>
