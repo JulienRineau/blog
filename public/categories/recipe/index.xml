@@ -9,7 +9,7 @@
     <lastBuildDate>Sun, 12 May 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/recipe/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Wav2Vec 2.0 Implementation From Scratch</title>
+      <title>Wav2Vec 2.0 Implementation</title>
       <link>http://localhost:1313/posts/wav2vec2/</link>
       <pubDate>Sun, 12 May 2024 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/wav2vec2/</guid>
@@ -20,7 +20,7 @@ Architecture My implementation closely follows the Wav2Vec 2.0 BASE model archit
 768 embedding size 8 attention heads 12 transformer blocks 512 convolutional channels in the feature encoder 2 groups and 320 choices per group in the quantizer This configuration results in approximately 95M parameters.</description>
     </item>
     <item>
-      <title>GPT-2 Pretraining with Lightning</title>
+      <title>GPT-2 Pretraining</title>
       <link>http://localhost:1313/posts/gpt-lightning/</link>
       <pubDate>Sun, 12 Nov 2023 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/gpt-lightning/</guid>

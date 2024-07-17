@@ -1,5 +1,5 @@
 ---
-title: "U-Net Segmentation"
+title: "U-Net for Segmentation"
 date: 2023-09-13
 draft: false
 ShowToc: true
