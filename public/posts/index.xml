@@ -34,6 +34,7 @@ Dataset I used the Alpaca-GPT4 dataset from Stanford that contains 52K instructi
       <pubDate>Thu, 18 Jan 2024 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/dit/</guid>
       <description>A PyTorch implementation of the Diffusion Transformer (DiT) model. With OpenAI&amp;rsquo;s Sora demonstrating the power of DiTs for multidimensional tasks, they represents a stable and efficient approach any diffusion task (vision, audio, robotics etc..). This implementation provides a clean, modular codebase to extend DiT for various generative applications.
+Code Repository
 Architecture Implementation details Firstlayer: A Python class that initializes the input processing. It includes a Patchify module to convert images into patches, a learnable positional embedding, and separate embedding layers for timesteps and class labels.</description>
     </item>
     <item>
