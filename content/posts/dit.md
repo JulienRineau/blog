@@ -1,6 +1,6 @@
 ---
 title: "Diffusion Transformer Implementation"
-date: 2024-01-18
+date: 2024-05-17
 draft: false
 ShowToc: true
 ---
