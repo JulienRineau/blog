@@ -290,17 +290,18 @@ The scheduler computes the denoised sample given the model&rsquo;s noise predict
 </span></span></code></pre></div></li>
 </ol>
 <h2 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h2>
-<p>The model was trained on a 8xA100 cluster for 1h26 with the following hyperparameters:</p>
+<p>The model was trained for for 22h a Nvidia A10 with the following hyperparameters:</p>
 <ul>
 <li><strong>Patch size:</strong> 2</li>
 <li><strong>Number of DiT blocks:</strong> 12</li>
 <li><strong>Number of head:</strong> 12</li>
 <li><strong>Embedding size:</strong> 768</li>
-<li><strong>Batch size:</strong> 32*8</li>
+<li><strong>Batch size:</strong> 64</li>
 <li><strong>Learning rate:</strong> 1e-4</li>
 </ul>
+<p><img alt="Training log" src="/img/dit/training_log.png"></p>
 <p>When stopped the model was still learning and its performances can stilll be improved by scalling its size and letting it learn longer. Here is a sampling example:
-<img alt="Results" src="/img/dit/results.png"></p>
+<img alt="Results" src="/img/dit/results2.png"></p>
 
 
   </div>

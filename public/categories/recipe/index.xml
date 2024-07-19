@@ -6,12 +6,12 @@
     <description>Recent content in Recipe on Julien Rineau</description>
     <generator>Hugo -- 0.127.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 12 May 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 20 Mar 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/recipe/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Wav2Vec 2.0 Implementation</title>
       <link>http://localhost:1313/posts/wav2vec2/</link>
-      <pubDate>Sun, 12 May 2024 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/wav2vec2/</guid>
       <description>A Wav2Vec 2.0 implementation using PyTorch Lightning. This project aims to create a clean, modifiable building block for speech reco
 gnition research. It uses common tools for optimized training and effective monitoring. The implementation includes code for model training, dataset preparation, and evaluation. This page also details the results of pretraining on the Libri-Speech dataset.

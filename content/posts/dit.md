@@ -136,14 +136,16 @@ The scheduler computes the denoised sample given the model's noise prediction:
     ```
 
 ## Results
-The model was trained on a 8xA100 cluster for 1h26 with the following hyperparameters:
+The model was trained for for 22h a Nvidia A10 with the following hyperparameters:
 - **Patch size:** 2
 - **Number of DiT blocks:** 12
 - **Number of head:** 12
 - **Embedding size:** 768
-- **Batch size:** 32*8
+- **Batch size:** 64
 - **Learning rate:** 1e-4
 
+![Training log](/img/dit/training_log.png)
+
 When stopped the model was still learning and its performances can stilll be improved by scalling its size and letting it learn longer. Here is a sampling example:
-![Results](/img/dit/results.png)
+![Results](/img/dit/results2.png)
 
