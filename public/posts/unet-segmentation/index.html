@@ -9,10 +9,37 @@
 <meta name="keywords" content="">
 <meta name="description" content="A simple Pytroch U-Net implementation. The goal is to have an clean building block that can be used in other bigger projects (e.g. Diffusion). The model is tested with a segmentation task on the MIT scene-parse-150 dataset.
 Code Repository
-Architecture The network is built up as follows:
+Architecture
+
+The network is built up as follows:
+
+
 The network consists of a downsampling path, a bottleneck, and an upsampling path.
+
+
 In the downsampling path:
-A sequence of DoubleConv modules are applied.">
+
+A sequence of DoubleConv modules are applied. Each DoubleConv consists of two convolutional layers, each followed by batch normalization and GELU activation.
+After each DoubleConv, a max pooling operation is applied to reduce the spatial dimensions.
+
+class DoubleConv(nn.Module):
+    def __init__(self, in_channels, out_channedls):
+        super(DoubleConv, self).__init__()
+        self.conv = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False),
+            nn.BatchNorm2d(out_channels),
+            nn.GELU(approximate=&#34;tanh&#34;),
+            nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
+            nn.GELU(approximate=&#34;tanh&#34;),
+        )
+
+    def forward(self, x):
+        return self.conv(x)
+
+
+
+
+At the bottom of the network, a bottleneck DoubleConv is applied, doubling the number of channels.">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/unet-segmentation/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
@@ -251,7 +278,7 @@ A sequence of DoubleConv modules are applied.">
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
+        <span>&copy; 2026 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
 
     <span>
         Powered by

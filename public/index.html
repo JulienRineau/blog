@@ -2,7 +2,7 @@
 <html lang="en" dir="auto">
 
 <head>
-	<meta name="generator" content="Hugo 0.127.0"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+	<meta name="generator" content="Hugo 0.141.0"><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="noindex, nofollow">
@@ -163,13 +163,44 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">World Models for Human Manipulation
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>I trained a world model that predicts how humans manipulate objects from a single image and an action sequence.
+Given the first frame and 16-step action sequence, the model predicts future manipulation frames.
+The premise is simple: if you can accurately simulate what happens when a human performs an action, you don’t need a physical robot to learn manipulation. A policy can explore thousands of candidate action sequences in imagination, evaluating outcomes before committing to real-world execution. The bottleneck shifts from expensive robot time to GPU compute.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-16 00:00:00 +0000 UTC'>January 16, 2025</span></footer>
+  <a class="entry-link" aria-label="post link to World Models for Human Manipulation" href="http://localhost:1313/posts/vid2world-human/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">VR Teleoperation for Bimanual Robots
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>I built a system that lets you control a bimanual robot using a Meta Quest headset. Put on the headset, grab the controllers, and a Trossen AI Mobile robot mirrors your arm movements in real-time through inverse kinematics. The code is available on request.
+[VIDEO_REAL_ROBOT_PLACEHOLDER: Full teleoperation demo - controlling the real robot]
+Architecture The system bridges consumer VR hardware to research-grade robotics through a streaming pipeline optimized for low latency.
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-15 00:00:00 +0000 UTC'>January 15, 2025</span></footer>
+  <a class="entry-link" aria-label="post link to VR Teleoperation for Bimanual Robots" href="http://localhost:1313/posts/quest-teleoperation/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">Diffusion Transformer Implementation
     </h2>
   </header>
   <div class="entry-content">
     <p>A PyTorch implementation of the Diffusion Transformer (DiT) model. With OpenAI’s Sora demonstrating the power of DiTs for multidimensional tasks, they represents a stable and efficient approach any diffusion task (vision, audio, robotics etc..). This implementation provides a clean, modular codebase to extend DiT for various generative applications.
 Code Repository
-Architecture Implementation details Firstlayer: A Python class that initializes the input processing. It includes a Patchify module to convert images into patches, a learnable positional embedding, and separate embedding layers for timesteps and class labels....</p>
+Architecture Implementation details Firstlayer: A Python class that initializes the input processing. It includes a Patchify module to convert images into patches, a learnable positional embedding, and separate embedding layers for timesteps and class labels. The forward method combines these elements to prepare the input for the DiT blocks. b, c, h, w = x.shape p = self.patch_size # Reshape and permute to get patches x = x.reshape(b, c, h // p, p, w // p, p) x = x.permute(0, 2, 4, 3, 5, 1).contiguous() x = x.view(b, -1, p * p * c) # Project patches to embedding dimension x = projection(x) LayerNorm: The LayerNorm affine transformation (scaling and shifting) is provided by a adaLN_modulation module, which computes these parameters based on the conditioning vector. This allows the scaling and shifting to be input-dependent rather than fixed learnable parameters. self.adaLN_modulation = nn.Sequential( nn.SiLU(), nn.Linear(config.n_embd, 6 * config.n_embd, bias=True)) MLP: Transformers struggle with spatial coherence in image tasks, often producing “patchy” outputs. To address this, we add a depth-wise convolution to the FFN layer, as introduced in the LocalViT paper. This allows the model to mix information from nearby pixels efficiently, improving spatial awareness and output quality with minimal computational cost. Modulate: Performs element-wise modulation of normalized inputs using computed shift and scale parameters. It’s used in both DiTBlock and FinalLayer to apply adaptive normalization. shift, scale = self.adaLN_modulation(c).chunk(6, dim=1) x = modulate(self.norm_final(x), shift, scale) SelfAttention: Multi-head self-attention module. It uses linear layers to project inputs into query, key, and value representations, applies scaled dot-product attention using PyTorch’s functional API, and projects the output back to the original embedding dimension. FinalLayer: It uses a LayerNorm without affine parameters, computes adaptive normalization parameters via the adaLN_modulation module, and applies a final linear projection to reshape the output to the desired dimensions. Classifier-free guidance \[ \hat{\varepsilon}_\theta(x_t, c) = \varepsilon_\theta(x_t, \emptyset) &#43; s \cdot (\varepsilon_\theta(x_t, c) - \varepsilon_\theta(x_t, \emptyset))\] Where $c$ is the condition, $\emptyset$ is a null condition, and $s &gt; 1$ is the guidance scale.
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-05-17 00:00:00 +0000 UTC'>May 17, 2024</span></footer>
   <a class="entry-link" aria-label="post link to Diffusion Transformer Implementation" href="http://localhost:1313/posts/dit/"></a>
@@ -185,7 +216,7 @@ Architecture Implementation details Firstlayer: A Python class that initializes 
 gnition research. It uses common tools for optimized training and effective monitoring. The implementation includes code for model training, dataset preparation, and evaluation. This page also details the results of pretraining on the Libri-Speech dataset.
 Code Repository
 Architecture My implementation closely follows the Wav2Vec 2.0 BASE model architecture:
-768 embedding size 8 attention heads 12 transformer blocks 512 convolutional channels in the feature encoder 2 groups and 320 choices per group in the quantizer This configuration results in approximately 95M parameters....</p>
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-03-20 00:00:00 +0000 UTC'>March 20, 2024</span></footer>
   <a class="entry-link" aria-label="post link to Wav2Vec 2.0 Implementation" href="http://localhost:1313/posts/wav2vec2/"></a>
@@ -199,7 +230,8 @@ Architecture My implementation closely follows the Wav2Vec 2.0 BASE model archit
   <div class="entry-content">
     <p>Following my previous GPT-2 pretraining project, this is clean pipeline for fine-tuning with a “from scratch” implementation of LoRA that can be reused for other project. I’m choosing GPT-2 because I’m renting a small GPU for the experiment with a small memory but this can be reproduced with any other transformer model.
 Code Repository
-Dataset I used the Alpaca-GPT4 dataset from Stanford that contains 52K instruction-following data generated by GPT-4. Each row of the dataset contains an instruction, an optional input that provide context, and an output:...</p>
+Dataset I used the Alpaca-GPT4 dataset from Stanford that contains 52K instruction-following data generated by GPT-4. Each row of the dataset contains an instruction, an optional input that provide context, and an output:
+...</p>
   </div>
   <footer class="entry-footer"><span title='2024-01-18 00:00:00 +0000 UTC'>January 18, 2024</span></footer>
   <a class="entry-link" aria-label="post link to LoRA Instruction Tuning Implementation" href="http://localhost:1313/posts/rlhf/"></a>
@@ -212,7 +244,8 @@ Dataset I used the Alpaca-GPT4 dataset from Stanford that contains 52K instructi
   </header>
   <div class="entry-content">
     <p>A nano-GPT implementation with Pytorch Lightning. The goal is to have a clean building block for other research projects by containing just enough manual implementation do be easily modifiable, but also by using common tools to have a painless optimized training and nice monitoring. Its contains the code to train the model, prepare the dataset and run evals. This page also details results I got training on HF’s FineWeb-Edu.
-Code Repository...</p>
+Code Repository
+...</p>
   </div>
   <footer class="entry-footer"><span title='2023-11-12 00:00:00 +0000 UTC'>November 12, 2023</span></footer>
   <a class="entry-link" aria-label="post link to GPT-2 Pretraining" href="http://localhost:1313/posts/gpt-lightning/"></a>
@@ -229,7 +262,8 @@ Code Repository
 Architecture The network is built up as follows:
 The network consists of a downsampling path, a bottleneck, and an upsampling path.
 In the downsampling path:
-A sequence of DoubleConv modules are applied....</p>
+A sequence of DoubleConv modules are applied. Each DoubleConv consists of two convolutional layers, each followed by batch normalization and GELU activation. After each DoubleConv, a max pooling operation is applied to reduce the spatial dimensions. class DoubleConv(nn.Module): def __init__(self, in_channels, out_channedls): super(DoubleConv, self).__init__() self.conv = nn.Sequential( nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False), nn.BatchNorm2d(out_channels), nn.GELU(approximate=&#34;tanh&#34;), nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False), nn.GELU(approximate=&#34;tanh&#34;), ) def forward(self, x): return self.conv(x) At the bottom of the network, a bottleneck DoubleConv is applied, doubling the number of channels.
+...</p>
   </div>
   <footer class="entry-footer"><span title='2023-09-13 00:00:00 +0000 UTC'>September 13, 2023</span></footer>
   <a class="entry-link" aria-label="post link to U-Net for Segmentation" href="http://localhost:1313/posts/unet-segmentation/"></a>
@@ -241,7 +275,8 @@ A sequence of DoubleConv modules are applied....</p>
     </h2>
   </header>
   <div class="entry-content">
-    <p>Quadrupeds robots currently have difficulty overcoming rough terrains, the goal of this project is to improve the agility and robustness of legged locomotion over complex terrain using reinforcement learning. The project consists of implementing the following paper from Nvidia Learning to Walk in Minutes Using Massively Parallel Deep Reinforcement Learning and adapt it to the unitree A1 Problem statement Traditionnaly locomotion is achieve through Optimization algorithms, especially Model Predictive Control (MPC)....</p>
+    <p>Quadrupeds robots currently have difficulty overcoming rough terrains, the goal of this project is to improve the agility and robustness of legged locomotion over complex terrain using reinforcement learning. The project consists of implementing the following paper from Nvidia Learning to Walk in Minutes Using Massively Parallel Deep Reinforcement Learning and adapt it to the unitree A1 Problem statement Traditionnaly locomotion is achieve through Optimization algorithms, especially Model Predictive Control (MPC). MPC is a feedback control algorithm that uses a system model to predict future behavior and optimize control inputs for desired trajectories. For robots, such as in MIT’s Cheetah 3 project (Dynamic Locomotion in the MIT Cheetah 3 Through Convex Model-Predictive Contro) the control task is framed as a convex optimization problem to minimize trajectory errors and control efforts within friction constraints.
+...</p>
   </div>
   <footer class="entry-footer"><span title='2023-06-25 00:00:00 +0000 UTC'>June 25, 2023</span></footer>
   <a class="entry-link" aria-label="post link to RL Policy for Legged Locomotion" href="http://localhost:1313/posts/rl-policy/"></a>
@@ -254,7 +289,8 @@ A sequence of DoubleConv modules are applied....</p>
   </header>
   <div class="entry-content">
     <p>Control a ball on a plate using a robotic manipulator and a MPC controller. This project was carried out as part of the CS206B Robotic Manipulation and Interaction course at UC Berkeley
-MPC Controller MPC is a type of feedback control algorithm, in which a model of the system is used to make predictions about it’s future behavior. The control inputs are then computed based on the predictions, with the goal of achieving the desired system behavior....</p>
+MPC Controller MPC is a type of feedback control algorithm, in which a model of the system is used to make predictions about it’s future behavior. The control inputs are then computed based on the predictions, with the goal of achieving the desired system behavior. This is done iteratively, with the model being updated at each time step based on the measured system outputs.
+...</p>
   </div>
   <footer class="entry-footer"><span title='2023-03-25 00:00:00 +0000 UTC'>March 25, 2023</span></footer>
   <a class="entry-link" aria-label="post link to MPC Ball Balancing Robot" href="http://localhost:1313/posts/ball-balancing-robot/"></a>
@@ -262,7 +298,7 @@ MPC Controller MPC is a type of feedback control algorithm, in which a model of 
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
+        <span>&copy; 2026 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
 
     <span>
         Powered by

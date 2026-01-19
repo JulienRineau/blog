@@ -8,7 +8,8 @@
 <title>MPC Ball Balancing Robot | Julien Rineau</title>
 <meta name="keywords" content="">
 <meta name="description" content="Control a ball on a plate using a robotic manipulator and a MPC controller. This project was carried out as part of the CS206B Robotic Manipulation and Interaction course at UC Berkeley
-MPC Controller MPC is a type of feedback control algorithm, in which a model of the system is used to make predictions about it&rsquo;s future behavior. The control inputs are then computed based on the predictions, with the goal of achieving the desired system behavior.">
+MPC Controller
+MPC is a type of feedback control algorithm, in which a model of the system is used to make predictions about it&rsquo;s future behavior. The control inputs are then computed based on the predictions, with the goal of achieving the desired system behavior. This is done iteratively, with the model being updated at each time step based on the measured system outputs.">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/ball-balancing-robot/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
@@ -179,8 +180,7 @@ y_{k+1} = y_k + \dot{y}_k \Delta t \\
 \dot{\theta} \\
 \dot{\psi} \\
 \end{bmatrix}
-\]
-<p>The MPC was tested against model-accurate and non-model accurate versions of a simulation environment. Even with cases such as 80% input, failing small-angle assumptions, or noisy position data, the MPC did a solid job at managing to reach desired positions and follow paths. A noisy simulation environment with reference tracking is shown below, with the red dot describing the desired position, grey dot as the simulated position of the ball, and the small markers indicating the MPC’s predicted future states.</p>
+\]<p>The MPC was tested against model-accurate and non-model accurate versions of a simulation environment. Even with cases such as 80% input, failing small-angle assumptions, or noisy position data, the MPC did a solid job at managing to reach desired positions and follow paths. A noisy simulation environment with reference tracking is shown below, with the red dot describing the desired position, grey dot as the simulated position of the ball, and the small markers indicating the MPC’s predicted future states.</p>
 <p><img alt="MPC logo" src="/img/mpc-ball-controller/tracking_sim.gif"></p>
 <h2 id="ball-detection">Ball Detection<a hidden class="anchor" aria-hidden="true" href="#ball-detection">#</a></h2>
 <p>The ball detection has been kept as lightweight as possible to used in real time. The process involves thresholding to separate the ball from the background, applying Gaussian blur to smooth edges, adding erosion and dilation to refine object boundaries, detecting contours to identify the ball, and estimating its centroid position.</p>
@@ -197,11 +197,8 @@ y_{k+1} = y_k + \dot{y}_k \Delta t \\
 <h2 id="results">Results<a hidden class="anchor" aria-hidden="true" href="#results">#</a></h2>
 <p>The robot used is a Sawyer arm on which we attached a custom platform that hold the webcam and where the ball is balanced.</p>
 
-
-    
     <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/ubb5QVqX0ho?autoplay=0&controls=1&end=0&loop=0&mute=0&start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"
-      ></iframe>
+      <iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen" loading="eager" referrerpolicy="strict-origin-when-cross-origin" src="https://www.youtube.com/embed/ubb5QVqX0ho?autoplay=0&amp;controls=1&amp;end=0&amp;loop=0&amp;mute=0&amp;start=0" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;" title="YouTube video"></iframe>
     </div>
 
 
@@ -216,7 +213,7 @@ y_{k+1} = y_k + \dot{y}_k \Delta t \\
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
+        <span>&copy; 2026 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
 
     <span>
         Powered by

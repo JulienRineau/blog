@@ -9,7 +9,37 @@
 <meta name="keywords" content="">
 <meta name="description" content="A PyTorch implementation of the Diffusion Transformer (DiT) model. With OpenAI&rsquo;s Sora demonstrating the power of DiTs for multidimensional tasks, they represents a stable and efficient approach any diffusion task (vision, audio, robotics etc..). This implementation provides a clean, modular codebase to extend DiT for various generative applications.
 Code Repository
-Architecture Implementation details Firstlayer: A Python class that initializes the input processing. It includes a Patchify module to convert images into patches, a learnable positional embedding, and separate embedding layers for timesteps and class labels.">
+Architecture
+
+Implementation details
+
+Firstlayer: A Python class that initializes the input processing. It includes a Patchify module to convert images into patches, a learnable positional embedding, and separate embedding layers for timesteps and class labels. The forward method combines these elements to prepare the input for the DiT blocks.
+b, c, h, w = x.shape
+p = self.patch_size
+
+# Reshape and permute to get patches
+x = x.reshape(b, c, h // p, p, w // p, p)
+x = x.permute(0, 2, 4, 3, 5, 1).contiguous()
+x = x.view(b, -1, p * p * c)
+
+# Project patches to embedding dimension
+x = projection(x)
+
+LayerNorm: The LayerNorm affine transformation (scaling and shifting) is provided by a adaLN_modulation module, which computes these parameters based on the conditioning vector. This allows the scaling and shifting to be input-dependent rather than fixed learnable parameters.
+self.adaLN_modulation = nn.Sequential(
+nn.SiLU(), nn.Linear(config.n_embd, 6 * config.n_embd, bias=True))
+
+MLP: Transformers struggle with spatial coherence in image tasks, often producing &ldquo;patchy&rdquo; outputs. To address this, we add a depth-wise convolution to the FFN layer, as introduced in the LocalViT paper. This allows the model to mix information from nearby pixels efficiently, improving spatial awareness and output quality with minimal computational cost.
+Modulate: Performs element-wise modulation of normalized inputs using computed shift and scale parameters. It&rsquo;s used in both DiTBlock and FinalLayer to apply adaptive normalization.
+shift, scale = self.adaLN_modulation(c).chunk(6, dim=1)
+x = modulate(self.norm_final(x), shift, scale)
+
+SelfAttention: Multi-head self-attention module. It uses linear layers to project inputs into query, key, and value representations, applies scaled dot-product attention using PyTorch&rsquo;s functional API, and projects the output back to the original embedding dimension.
+FinalLayer: It uses a LayerNorm without affine parameters, computes adaptive normalization parameters via the adaLN_modulation module, and applies a final linear projection to reshape the output to the desired dimensions.
+
+Classifier-free guidance
+\[ \hat{\varepsilon}_\theta(x_t, c) = \varepsilon_\theta(x_t, \emptyset) &#43; s \cdot (\varepsilon_\theta(x_t, c) - \varepsilon_\theta(x_t, \emptyset))\]
+Where $c$ is the condition, $\emptyset$ is a null condition, and $s &gt; 1$ is the guidance scale.">
 <meta name="author" content="">
 <link rel="canonical" href="http://localhost:1313/posts/dit/">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
@@ -203,10 +233,7 @@ Architecture Implementation details Firstlayer: A Python class that initializes 
 <li><strong>FinalLayer:</strong> It uses a LayerNorm without affine parameters, computes adaptive normalization parameters via the <code>adaLN_modulation</code> module, and applies a final linear projection to reshape the output to the desired dimensions.</li>
 </ul>
 <h3 id="classifier-free-guidance">Classifier-free guidance<a hidden class="anchor" aria-hidden="true" href="#classifier-free-guidance">#</a></h3>
-<p>The official implementation uses classifier-free guidance improve the sample quality by combining conditional and unconditional generation. It modifies the denoising process to:
-</p>
-\[ \hat{\varepsilon}_\theta(x_t, c) = \varepsilon_\theta(x_t, \emptyset) + s \cdot (\varepsilon_\theta(x_t, c) - \varepsilon_\theta(x_t, \emptyset))\]
-<p>
+\[ \hat{\varepsilon}_\theta(x_t, c) = \varepsilon_\theta(x_t, \emptyset) + s \cdot (\varepsilon_\theta(x_t, c) - \varepsilon_\theta(x_t, \emptyset))\]<p>
 Where $c$ is the condition, $\emptyset$ is a null condition, and $s &gt; 1$ is the guidance scale.</p>
 <p>While effective, this technique doubles computational cost. Our DiT implementation omits it, prioritizing computational efficiency for future robotics applications where real-time performance is crucial. By optimizing only $p_\theta(x_{t-1}|x_t,c)$, we balance generation quality with speed, better suiting time-sensitive robotic control tasks for example.</p>
 <h2 id="dataset">Dataset<a hidden class="anchor" aria-hidden="true" href="#dataset">#</a></h2>
@@ -240,37 +267,17 @@ Where $c$ is the condition, $\emptyset$ is a null condition, and $s &gt; 1$ is t
 </span></span></code></pre></div><h2 id="simplified-diffusion-model-formulation">Simplified Diffusion Model Formulation<a hidden class="anchor" aria-hidden="true" href="#simplified-diffusion-model-formulation">#</a></h2>
 <p>We implement a variance-preserving diffusion model using the <code>DDPMScheduler</code> from the Hugging Face <code>Diffusers</code> library, with the <code>squaredcos_cap_v2</code> beta schedule. This approach maintains the Gaussian nature of the diffusion process while leveraging optimized scheduling for improved performance.</p>
 <h3 id="noise-schedule">Noise Schedule<a hidden class="anchor" aria-hidden="true" href="#noise-schedule">#</a></h3>
-<p>We use the <code>squaredcos_cap_v2</code> beta schedule, which defines $\beta_t$ as:
-</p>
-\[ \beta_t = \min\left(\frac{t}{T}\cdot 0.999, \sqrt{1 - \left(\cos\left(\frac{t/T + s}{1 + s}\cdot \frac{\pi}{2}\right)\right)^2}\right) \]
-<p>
+\[ \beta_t = \min\left(\frac{t}{T}\cdot 0.999, \sqrt{1 - \left(\cos\left(\frac{t/T + s}{1 + s}\cdot \frac{\pi}{2}\right)\right)^2}\right) \]<p>
 where $T$ is the total number of timesteps and $s$ is a small constant (default 0.008).
 This schedule provides a smooth progression of noise levels, starting slow, accelerating in the middle, and then slowing down again at the end. The min operation caps the maximum beta value to 0.999.</p>
 <h3 id="forward-process">Forward Process<a hidden class="anchor" aria-hidden="true" href="#forward-process">#</a></h3>
-<p>The forward noising process remains unchanged:
-</p>
-\[ q(x_t|x_0) = \mathcal{N}(x_t; \sqrt{\bar{\alpha}_t} x_0, (1 - \bar{\alpha}_t)\mathbf{I}) \]
-<p>
-$x_t$ can be sampled as:
-</p>
-\[ x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \varepsilon_{t}, \text{ where } \varepsilon_{t} \sim \mathcal{N}(0, \mathbf{I}) \]
-<p>
+\[ q(x_t|x_0) = \mathcal{N}(x_t; \sqrt{\bar{\alpha}_t} x_0, (1 - \bar{\alpha}_t)\mathbf{I}) \]\[ x_t = \sqrt{\bar{\alpha}_t} x_0 + \sqrt{1 - \bar{\alpha}_t} \varepsilon_{t}, \text{ where } \varepsilon_{t} \sim \mathcal{N}(0, \mathbf{I}) \]<p>
 Here, $\bar{\alpha_{t}} = \prod_{s=1}^{t} (1 - \beta_s)$ is the cumulative product of noise scale factors, computed by the DDPMScheduler based on the beta schedule.</p>
 <h3 id="reverse-process">Reverse Process<a hidden class="anchor" aria-hidden="true" href="#reverse-process">#</a></h3>
-<p>The reverse process is used when generating and image. We directly predict the noise $\varepsilon_\theta$:
-</p>
-\[ p_\theta(x_{t-1}|x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 \mathbf{I}) \]
-<p>
-Where:
-</p>
-\[ \mu_\theta(x_t, t) = \frac{1}{\sqrt{\alpha_t}}(x_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}t}}\varepsilon_{\theta(x_t, t)}) \]
-<p>
+\[ p_\theta(x_{t-1}|x_t) = \mathcal{N}(x_{t-1}; \mu_\theta(x_t, t), \sigma_t^2 \mathbf{I}) \]\[ \mu_\theta(x_t, t) = \frac{1}{\sqrt{\alpha_t}}(x_t - \frac{\beta_t}{\sqrt{1-\bar{\alpha}t}}\varepsilon_{\theta(x_t, t)}) \]<p>
 The <code>DDPMScheduler</code> handles the computation of $\alpha_t$, $\beta_t$, and $\bar{\alpha}_t$ based on the <code>squaredcos_cap_v2</code> schedule, ensuring consistency between the forward and reverse processes.</p>
 <h3 id="training-objective">Training Objective<a hidden class="anchor" aria-hidden="true" href="#training-objective">#</a></h3>
-<p>We use the simplified loss:
-</p>
-\[ \mathcal{L_{\text{simple}}}(\theta) = |\varepsilon_{\theta(x_t, t)} - \varepsilon_{t}|^2 \]
-<h3 id="implementation-with-hfs-ddpmscheduler">Implementation with HF&rsquo;s DDPMScheduler<a hidden class="anchor" aria-hidden="true" href="#implementation-with-hfs-ddpmscheduler">#</a></h3>
+\[ \mathcal{L_{\text{simple}}}(\theta) = |\varepsilon_{\theta(x_t, t)} - \varepsilon_{t}|^2 \]<h3 id="implementation-with-hfs-ddpmscheduler">Implementation with HF&rsquo;s DDPMScheduler<a hidden class="anchor" aria-hidden="true" href="#implementation-with-hfs-ddpmscheduler">#</a></h3>
 <p>In practice, using the DDPMScheduler simplifies our implementation:</p>
 <ol>
 <li>
@@ -314,7 +321,7 @@ The scheduler computes the denoised sample given the model&rsquo;s noise predict
     </main>
     
 <footer class="footer">
-        <span>&copy; 2024 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
+        <span>&copy; 2026 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
 
     <span>
         Powered by
