@@ -1,6 +1,6 @@
 ---
 title: "World Models for Human Manipulation"
-date: 2025-01-16
+date: 2026-01-16
 draft: false
 ShowToc: true
 ---

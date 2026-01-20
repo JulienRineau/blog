@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="noindex, nofollow">
+<title>Large-Scale Robotics Data Collection with UMI-Style Grippers | Julien Rineau</title>
+<meta name="keywords" content="">
+<meta name="description" content="(Additional contributors, alphabetically: Laz Kopits, Ryan Leong, Sheel Taskar, Daryl Yang, William Zang)
+Building robust robotic manipulation policies requires diverse, high-quality demonstration data at scale. The challenge lies not just in collecting data, but in doing so reliably across multiple devices while maintaining temporal synchronization and handling the inevitable network disruptions of real-world deployments. This post details the system architecture behind the SF Fold dataset, a large-scale robotics manipulation dataset collected using UMI-style grippers.">
+<meta name="author" content="">
+<link rel="canonical" href="http://localhost:1313/posts/sf-fold-dataset/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.b609c58d5c11bb90b1a54e04005d74ad1ddf22165eb79f5533967e57df9c3b50.css" integrity="sha256-tgnFjVwRu5CxpU4EAF10rR3fIhZet59VM5Z&#43;V9&#43;cO1A=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="en" href="http://localhost:1313/posts/sf-fold-dataset/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --code-block-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css"
+    integrity="sha384-wcIxkf4k558AjM3Yz3BBFQUbk/zgIYC2R0QpeeYb+TwlBVMrlgLqwRjRtGZiK7ww" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"
+    integrity="sha384-hIoBPJpTUs74ddyc4bFZSM1TVlQDA60VBbJS0oA934VSz82sBx1X7kSx2ATBDIyd" crossorigin="anonymous">
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+    integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body, 
+              {
+                  delimiters: [
+                      {left: '$$', right: '$$', display: true},
+                      {left: '\\[', right: '\\]', display: true},
+                      {left: '$', right: '$', display: false},
+                      {left: '\\(', right: '\\)', display: false}
+                  ]
+              }
+    );"></script>
+
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Julien Rineau (Alt + H)">Julien Rineau</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      Large-Scale Robotics Data Collection with UMI-Style Grippers
+    </h1>
+    <div class="post-meta"><span title='2025-11-01 00:00:00 +0000 UTC'>November 1, 2025</span>
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">Table of Contents</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#hardware-setup" aria-label="Hardware Setup">Hardware Setup</a><ul>
+                        
+                <li>
+                    <a href="#oak-d-wide-camera" aria-label="OAK-D Wide Camera">OAK-D Wide Camera</a></li></ul>
+                </li>
+                <li>
+                    <a href="#system-architecture" aria-label="System Architecture">System Architecture</a><ul>
+                        
+                <li>
+                    <a href="#puppet-communication" aria-label="Puppet Communication">Puppet Communication</a></li>
+                <li>
+                    <a href="#mqtt-broker-setup" aria-label="MQTT Broker Setup">MQTT Broker Setup</a></li></ul>
+                </li>
+                <li>
+                    <a href="#data-collection-flow" aria-label="Data Collection Flow">Data Collection Flow</a><ul>
+                        
+                <li>
+                    <a href="#status-publishing" aria-label="Status Publishing">Status Publishing</a></li>
+                <li>
+                    <a href="#acquisition-flow" aria-label="Acquisition Flow">Acquisition Flow</a></li>
+                <li>
+                    <a href="#upload-mechanism" aria-label="Upload Mechanism">Upload Mechanism</a></li></ul>
+                </li>
+                <li>
+                    <a href="#reliability-and-synchronization" aria-label="Reliability and Synchronization">Reliability and Synchronization</a><ul>
+                        
+                <li>
+                    <a href="#reconnection-mechanism" aria-label="Reconnection Mechanism">Reconnection Mechanism</a></li>
+                <li>
+                    <a href="#episode-synchronization" aria-label="Episode Synchronization">Episode Synchronization</a></li>
+                <li>
+                    <a href="#timing-and-clock-synchronization" aria-label="Timing and Clock Synchronization">Timing and Clock Synchronization</a></li></ul>
+                </li>
+                <li>
+                    <a href="#sample-data-visualization" aria-label="Sample Data Visualization">Sample Data Visualization</a></li>
+                <li>
+                    <a href="#dataset-and-usage" aria-label="Dataset and Usage">Dataset and Usage</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p style="text-align: center; color: #888; font-size: 0.85rem; margin-bottom: 1.5rem;">(Additional contributors, alphabetically: Laz Kopits, Ryan Leong, Sheel Taskar, Daryl Yang, William Zang)</p>
+<p>Building robust robotic manipulation policies requires diverse, high-quality demonstration data at scale. The challenge lies not just in collecting data, but in doing so reliably across multiple devices while maintaining temporal synchronization and handling the inevitable network disruptions of real-world deployments. This post details the system architecture behind the <strong><a href="https://huggingface.co/datasets/zeroshotdata/sf_fold">SF Fold dataset</a></strong>, a large-scale robotics manipulation dataset collected using UMI-style grippers.</p>
+<video autoplay loop muted playsinline style="max-width: 100%; display: block; margin: 0 auto;">
+  <source src="/img/sf-fold/demo_video_web.mp4" type="video/mp4">
+</video>
+<blockquote>
+<p><strong>Our Goal</strong>: Take the UMI concept from research prototype to <strong>production-ready hardware</strong>: a device anyone can pick up and use without specialized expertise, seamlessly integrated into cloud-based post-processing pipelines for scalable data collection.</p>
+</blockquote>
+<blockquote>
+<p><strong>Dataset</strong>: <a href="https://huggingface.co/datasets/zeroshotdata/sf_fold">huggingface.co/datasets/zeroshotdata/sf_fold</a></p>
+</blockquote>
+<hr>
+<h2 id="hardware-setup">Hardware Setup<a hidden class="anchor" aria-hidden="true" href="#hardware-setup">#</a></h2>
+<p>The data collection system builds on the <a href="https://umi-gripper.github.io/">UMI (Universal Manipulation Interface)</a> approach, using UMI-style still grippers equipped with OAK-D Wide cameras for 6-DoF pose tracking via ORB-SLAM3 in stereo mode. The setup supports bimanual manipulation tasks through a <strong>multi-puppet configuration</strong>: Left Puppet, Right Puppet, and Ego Puppet. Throughout this document, we refer to the data collection devices as &ldquo;puppets&rdquo;.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Component</th>
+          <th>Specification</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Gripper</td>
+          <td>UMI-Style Still Gripper</td>
+      </tr>
+      <tr>
+          <td>Camera</td>
+          <td>OAK-D Wide</td>
+      </tr>
+      <tr>
+          <td>IMU/Hall Sensors</td>
+          <td>200Hz sampling rate</td>
+      </tr>
+      <tr>
+          <td>Camera Frame Rate</td>
+          <td>30Hz</td>
+      </tr>
+      <tr>
+          <td>Control Interface</td>
+          <td>Physical button + LED feedback</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p><strong>Button Controls</strong>: <em>Long press</em> creates/closes datasets, <em>short press</em> starts recording episodes. Color-coded LEDs display current system status.</p>
+</blockquote>
+<h3 id="oak-d-wide-camera">OAK-D Wide Camera<a hidden class="anchor" aria-hidden="true" href="#oak-d-wide-camera">#</a></h3>
+<p>The OAK-D Wide provides stereo vision for 6-DoF pose tracking using ORB-SLAM3. The camera is mounted pointing upward on each gripper to avoid occlusions during manipulation tasks.</p>
+<div id="oak-d-viewer" style="width: 100%; height: 400px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: 8px; margin: 1rem 0; position: relative; cursor: grab;">
+  <div id="viewer-loading" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #888; font-family: system-ui;">Loading 3D model...</div>
+</div>
+<p style="text-align: center; font-style: italic; color: #666; margin-top: -0.5rem;">Interactive 3D model of the OAK-D Wide camera. Click and drag to rotate, scroll to zoom.</p>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function() {
+  const container = document.getElementById('oak-d-viewer');
+  const loading = document.getElementById('viewer-loading');
+
+  // Scene setup
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.001, 1000);
+  camera.position.set(0.25, 0.15, 0.25);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setClearColor(0x000000, 0);
+  container.appendChild(renderer.domElement);
+
+  // Lighting
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  scene.add(ambientLight);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  directionalLight.position.set(5, 10, 7);
+  scene.add(directionalLight);
+
+  const backLight = new THREE.DirectionalLight(0x4a90d9, 0.4);
+  backLight.position.set(-5, -5, -5);
+  scene.add(backLight);
+
+  // Controls
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.rotateSpeed = 0.8;
+  controls.enableZoom = true;
+  controls.minDistance = 0.05;
+  controls.maxDistance = 0.8;
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 1.0;
+
+  // Load OBJ
+  const loader = new THREE.OBJLoader();
+  loader.load('/img/sf-fold/oak_d_wide.obj',
+    function(object) {
+      // Center the model
+      const box = new THREE.Box3().setFromObject(object);
+      const center = box.getCenter(new THREE.Vector3());
+      object.position.sub(center);
+
+      // Apply material
+      object.traverse(function(child) {
+        if (child instanceof THREE.Mesh) {
+          child.material = new THREE.MeshPhongMaterial({
+            color: 0xaaaaaa,
+            specular: 0x555555,
+            shininess: 40
+          });
+        }
+      });
+
+      scene.add(object);
+      loading.style.display = 'none';
+    },
+    function(xhr) {
+      const percent = Math.round((xhr.loaded / xhr.total) * 100);
+      loading.textContent = 'Loading 3D model... ' + percent + '%';
+    },
+    function(error) {
+      loading.textContent = 'Error loading model';
+      console.error('OBJ load error:', error);
+    }
+  );
+
+  // Animation loop
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // Handle resize
+  window.addEventListener('resize', function() {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+  });
+
+  // Stop auto-rotate on interaction
+  container.addEventListener('mousedown', () => controls.autoRotate = false);
+  container.addEventListener('touchstart', () => controls.autoRotate = false);
+})();
+</script>
+<hr>
+<h2 id="system-architecture">System Architecture<a hidden class="anchor" aria-hidden="true" href="#system-architecture">#</a></h2>
+<p>The system follows a distributed architecture where multiple puppets coordinate through a central MQTT broker running on the Ego Puppet. This enables synchronized multi-view data collection while maintaining robustness against network failures.</p>
+<img src="/img/sf-fold/puppet_communication.png" alt="Puppet Communication Architecture" class="zoomable-img" style="width: 100%; max-width: 900px; display: block; margin: 1.5rem auto; border-radius: 4px; cursor: zoom-in;">
+<p style="text-align: center; font-style: italic; color: #666; margin-top: -0.5rem;">Architecture showing Right, Ego, and Left Puppets communicating via the central EgoBroker. Components include MQTTCommandListener, ButtonNode, and sensor_app. <em>(Click to enlarge)</em></p>
+<h3 id="puppet-communication">Puppet Communication<a hidden class="anchor" aria-hidden="true" href="#puppet-communication">#</a></h3>
+<p>Puppet interaction follows a state machine: <code>ON → DATASET_ACTIVE → RECORDING → UPLOADING</code></p>
+<p>Each puppet runs three core components:</p>
+<ul>
+<li><strong>MQTTCommandListener</strong>: Receives start/stop commands, triggers local recording scripts</li>
+<li><strong>ButtonNode</strong>: Handles physical button input on Right Puppet, broadcasts commands</li>
+<li><strong>sensor_app</strong>: Publishes sensor data and system status</li>
+</ul>
+<p>When a user presses the button on the Right Puppet, the ButtonNode publishes to the Ego Broker, which distributes synchronized commands to all puppets, ensuring simultaneous state transitions and episode alignment.</p>
+<h3 id="mqtt-broker-setup">MQTT Broker Setup<a hidden class="anchor" aria-hidden="true" href="#mqtt-broker-setup">#</a></h3>
+<p>The system implements a <strong>dual-broker architecture</strong> balancing reliability with discovery:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Broker</th>
+          <th>Port</th>
+          <th>Purpose</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Cloud (GCS)</td>
+          <td>1883</td>
+          <td>Discovery only</td>
+      </tr>
+      <tr>
+          <td>Local (Mosquitto)</td>
+          <td>1884</td>
+          <td>All internal communications</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p><strong>Key Design</strong>: The cloud broker serves <em>only</em> as a discovery mechanism. All data recording and episode management happens through the local broker, allowing fully offline operation after initial setup.</p>
+</blockquote>
+<details>
+<summary><strong>Cloud Broker Details</strong></summary>
+<ul>
+<li>Runs on Google Cloud infrastructure</li>
+<li>Each puppet publishes system metrics to <code>&lt;GROUP_NAME&gt;/&lt;PUPPET_SIDE&gt;/system_metrics</code></li>
+<li>Metrics include broker status and IP address</li>
+<li>New puppets subscribe to discover their local broker IP</li>
+<li>Connection uses standard port 1883 with admin credentials</li>
+<li>Automatic fallback to searching mode if connection fails</li>
+</ul>
+</details>
+<details>
+<summary><strong>Local Broker Details</strong></summary>
+<ul>
+<li>Mosquitto MQTT broker instance</li>
+<li>Handles all internal communications:
+<ul>
+<li>Message routing between system components</li>
+<li>Episode transitions and sensor data</li>
+<li>State change notifications</li>
+</ul>
+</li>
+<li>Maintains message order and delivery during disconnections</li>
+<li>Functions independently of internet connectivity</li>
+<li>All system events pass through this broker</li>
+</ul>
+</details>
+<hr>
+<h2 id="data-collection-flow">Data Collection Flow<a hidden class="anchor" aria-hidden="true" href="#data-collection-flow">#</a></h2>
+<p>The data flow spans from physical demonstration through cloud storage, with multiple checkpoints for reliability.</p>
+<img src="/img/sf-fold/sequence_diagram.png" alt="Data Flow Sequence Diagram" class="zoomable-img" style="width: 100%; max-width: 900px; display: block; margin: 1.5rem auto; border-radius: 4px; cursor: zoom-in;">
+<p style="text-align: center; font-style: italic; color: #666; margin-top: -0.5rem;">Complete data flow between Demonstrator, Puppet, MQTT Brokers, Flask API, Cloud SQL, GCS, and Pub/Sub. <em>(Click to enlarge)</em></p>
+<h3 id="status-publishing">Status Publishing<a hidden class="anchor" aria-hidden="true" href="#status-publishing">#</a></h3>
+<p>Each puppet continuously publishes status (IP, health metrics) to the Cloud MQTT Broker, enabling system monitoring and discovery.</p>
+<h3 id="acquisition-flow">Acquisition Flow<a hidden class="anchor" aria-hidden="true" href="#acquisition-flow">#</a></h3>
+<p>When the demonstrator presses the start/stop button:</p>
+<ol>
+<li>Button press publishes command to local MQTT broker</li>
+<li>Command triggers acquisition scripts on all connected puppets</li>
+<li>Each puppet records sensor data with precise timestamps</li>
+</ol>
+<h3 id="upload-mechanism">Upload Mechanism<a hidden class="anchor" aria-hidden="true" href="#upload-mechanism">#</a></h3>
+<p>After recording completes, uploads follow a secure, verifiable sequence:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Step</th>
+          <th>Endpoint</th>
+          <th>Action</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td><code>POST /puppet/request_upload</code></td>
+          <td>Request upload, log to Cloud SQL</td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td>-</td>
+          <td>Flask API generates signed URL</td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td><code>PUT</code> to GCS</td>
+          <td>Upload recording with signed URL</td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td><code>POST /puppet/confirm_upload</code></td>
+          <td>Confirm completion in Cloud SQL</td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td>Pub/Sub</td>
+          <td>Trigger post-processing pipeline</td>
+      </tr>
+  </tbody>
+</table>
+<details>
+<summary><strong>Upload Flow Details</strong></summary>
+<ol>
+<li>
+<p><strong>Request Upload</strong>: Puppet initiates via <code>POST /puppet/request_upload</code> to Flask API, which logs &ldquo;Upload Requested&rdquo; in Cloud SQL</p>
+</li>
+<li>
+<p><strong>Signed URL Generation</strong>: Flask API generates a signed URL with time-limited write access to the GCS bucket</p>
+</li>
+<li>
+<p><strong>Data Upload</strong>: Puppet uploads directly to GCS using <code>PUT</code> with the signed URL</p>
+</li>
+<li>
+<p><strong>Confirm Upload</strong>: Puppet confirms via <code>POST /puppet/confirm_upload</code>, updating Cloud SQL to &ldquo;Upload Confirmed&rdquo;</p>
+</li>
+<li>
+<p><strong>Trigger Processing</strong>: Completion publishes to Pub/Sub topics (<code>RawDataForCalibration</code> or <code>RawData</code>) for downstream pipelines</p>
+</li>
+</ol>
+<p>This mechanism ensures data integrity through explicit confirmation steps and enables tracking through Cloud SQL status entries.</p>
+</details>
+<hr>
+<h2 id="reliability-and-synchronization">Reliability and Synchronization<a hidden class="anchor" aria-hidden="true" href="#reliability-and-synchronization">#</a></h2>
+<p>Collecting synchronized multi-view data across distributed devices requires robust handling of network failures.</p>
+<h3 id="reconnection-mechanism">Reconnection Mechanism<a hidden class="anchor" aria-hidden="true" href="#reconnection-mechanism">#</a></h3>
+<p>TCP connections can become stale without detection, causing silent disconnections. The system employs two mechanisms:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Mechanism</th>
+          <th>Function</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>TCP Keepalive</strong></td>
+          <td>Periodic health checks, detects broken connections even when idle</td>
+      </tr>
+      <tr>
+          <td><strong>Socket Timeouts</strong></td>
+          <td>5-second max wait, prevents indefinite hangs</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p><strong>Failure Behavior</strong>: When connections fail, puppets continue recording locally while tracking disconnection events. LED shows <code>CONNECTING_TO_BROKER</code> (pulsing white) during recovery.</p>
+</blockquote>
+<details>
+<summary><strong>TCP Keepalive Details</strong></summary>
+<ul>
+<li>Activates periodic connection health checks</li>
+<li>Automatically sends small test messages when connection is idle</li>
+<li>Detects broken connections even when no data is being sent</li>
+<li>Configured when each puppet first connects to the broker</li>
+</ul>
+</details>
+<details>
+<summary><strong>Socket Timeout Details</strong></summary>
+<ul>
+<li>Sets maximum waiting time of 5 seconds for all network operations</li>
+<li>If sending/receiving data exceeds threshold, connection marked as failed</li>
+<li>Prevents system from hanging indefinitely during communication attempts</li>
+<li>Configured at initial connection establishment</li>
+</ul>
+</details>
+<h3 id="episode-synchronization">Episode Synchronization<a hidden class="anchor" aria-hidden="true" href="#episode-synchronization">#</a></h3>
+<p>When a puppet disconnects during recording, it misses episode transitions, causing numbering to become unsynchronized. The reconnection mechanism operates in <strong>three phases</strong>:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Phase</th>
+          <th>Action</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>1. Disconnect</strong></td>
+          <td>Store episode number in <code>/tmp/episode_at_disconnect</code>, log to <code>episode_timestamps.txt</code></td>
+      </tr>
+      <tr>
+          <td><strong>2. Reconnection</strong></td>
+          <td>Obtain current system-wide episode from broker, compare with saved</td>
+      </tr>
+      <tr>
+          <td><strong>3. Synchronization</strong></td>
+          <td>If mismatch: broadcast <code>sync_episode</code> command, align all counters</td>
+      </tr>
+  </tbody>
+</table>
+<details>
+<summary><strong>Phase Details</strong></summary>
+<p><strong>1. Disconnect Phase</strong></p>
+<ul>
+<li>Current episode number stored in <code>/tmp/episode_at_disconnect</code></li>
+<li>Disconnection timestamp recorded in <code>episode_timestamps.txt</code></li>
+<li>Format: <code># DISCONNECTED FROM BROKER at: [timestamp]</code></li>
+<li>Recording continues in current episode despite disconnection</li>
+</ul>
+<p><strong>2. Reconnection Phase</strong></p>
+<ul>
+<li>Current system-wide episode number obtained from broker</li>
+<li>Reconnection timestamp recorded in <code>episode_timestamps.txt</code></li>
+<li>Format: <code># RECONNECTED TO BROKER at: [timestamp]</code></li>
+<li>Saved episode number compared with current system episode</li>
+</ul>
+<p><strong>3. Synchronization Phase</strong></p>
+<ul>
+<li>If episode numbers match: continue recording in current episode</li>
+<li>If mismatch detected:
+<ul>
+<li>System broadcasts a <code>sync_episode</code> command</li>
+<li>All puppets process this as standard episode transition</li>
+<li>New episode timestamp added to <code>episode_timestamps.txt</code></li>
+<li>Episode counters aligned across all puppets</li>
+</ul>
+</li>
+</ul>
+</details>
+<details>
+<summary><strong>Example: Synchronized Timestamps</strong></summary>
+<p>When properly synchronized, all puppets maintain identical episode logs:</p>
+<pre tabindex="0"><code>ego/episode_timestamps.txt:
+Episode 1 started at: 1740348759.123456789
+Episode 2 started at: 1740348852.987654321
+Episode 3 started at: 1740348912.456789123
+Episode 4 started at: 1740348975.321654987
+Episode 5 started at: 1740349032.789456123
+Episode 6 started at: 1740349102.654789321
+</code></pre></details>
+<details>
+<summary><strong>Example: Disconnection Scenarios</strong></summary>
+<p>The <code>left/episode_timestamps.txt</code> below shows two disconnection events:</p>
+<pre tabindex="0"><code>Episode 1 started at: 1740348759.123456789
+# DISCONNECTED FROM BROKER at: 1740348800.123456789
+# RECONNECTED TO BROKER at: 1740348920.654321987
+Episode 3 started at: 1740348925.789123456
+Episode 4 started at: 1740348975.321654987
+# DISCONNECTED FROM BROKER at: 1740349000.123456789
+# RECONNECTED TO BROKER at: 1740349040.654321987
+Episode 5 started at: 1740349045.789123456
+Episode 6 started at: 1740349102.654789321
+</code></pre><hr>
+<p><strong>First Disconnection (Skipping Episodes)</strong>:</p>
+<ol>
+<li>All puppets start Episode 1 together</li>
+<li>Left puppet disconnects at timestamp <code>1740348800</code></li>
+<li>While disconnected, ego and right transition to Episodes 2 and 3</li>
+<li>Left reconnects at <code>1740348920</code>, others are in Episode 3</li>
+<li>Left syncs to Episode 3, <em>completely skipping Episode 2</em></li>
+<li>Timestamp shows Episode 3 starting shortly after reconnection (<code>1740348925</code>)</li>
+</ol>
+<hr>
+<p><strong>Second Disconnection (Single Episode Skip)</strong>:</p>
+<ol>
+<li>All puppets record Episode 4 together</li>
+<li>Left disconnects at <code>1740349000</code></li>
+<li>While disconnected, ego and right transition to Episode 5</li>
+<li>Left reconnects at <code>1740349040</code>, others are in Episode 5</li>
+<li>Left syncs to Episode 5 at <code>1740349045</code></li>
+<li>All puppets transition to Episode 6 together</li>
+</ol>
+</details>
+<h3 id="timing-and-clock-synchronization">Timing and Clock Synchronization<a hidden class="anchor" aria-hidden="true" href="#timing-and-clock-synchronization">#</a></h3>
+<p>Precise timing is crucial for multi-device synchronization. When a new episode starts, the system records the exact timestamp to <code>episode_timestamps.txt</code>. Episode boundaries are determined by comparing each data point&rsquo;s timestamp with recorded start times.</p>
+<table>
+  <thead>
+      <tr>
+          <th>Sensor Type</th>
+          <th>Sample Rate</th>
+          <th>Transition Gap</th>
+          <th>Missing Samples</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>IMU/Hall</td>
+          <td>200Hz</td>
+          <td>~10μs</td>
+          <td>1-2 samples</td>
+      </tr>
+      <tr>
+          <td>Camera</td>
+          <td>30Hz</td>
+          <td>~20ms</td>
+          <td>0-1 frames</td>
+      </tr>
+  </tbody>
+</table>
+<blockquote>
+<p><strong>Clock Sync</strong>: All devices use <strong>Chrony</strong> with public NTP servers, providing sub-millisecond accuracy for multi-device coordination.</p>
+</blockquote>
+<details>
+<summary><strong>Timing Details</strong></summary>
+<p><strong>Episode Boundary Detection</strong>:</p>
+<ul>
+<li>Data points with timestamps <em>before</em> episode start → previous episode</li>
+<li>Data points with timestamps <em>after or equal</em> → new episode</li>
+</ul>
+<p><strong>IMU/Hall Sensors (200Hz)</strong>:</p>
+<ul>
+<li>Typical gap around episode transition: ~10 microseconds</li>
+<li>Usually missing 1-2 samples at transition</li>
+<li>Last sample typically ~5μs before transition</li>
+<li>First new sample typically ~5μs after transition</li>
+</ul>
+<p><strong>Camera Data (30Hz)</strong>:</p>
+<ul>
+<li>Typical gap around episode transition: ~20 milliseconds</li>
+<li>Usually missing 0-1 frames at transition</li>
+<li>Last frame typically ~10ms before transition</li>
+<li>First new frame typically ~10ms after transition</li>
+</ul>
+<p><strong>Clock Synchronization</strong>:</p>
+<ul>
+<li>Chrony installed on each Raspberry Pi host</li>
+<li>Continuously synchronizes with reliable external NTP sources</li>
+<li>Provides sub-millisecond accuracy sufficient for multi-device coordination</li>
+</ul>
+</details>
+<hr>
+<h2 id="sample-data-visualization">Sample Data Visualization<a hidden class="anchor" aria-hidden="true" href="#sample-data-visualization">#</a></h2>
+<p>The dataset includes interactive 3D visualizations using <a href="https://rerun.io/">Rerun</a>, allowing exploration of recorded episodes with synchronized multi-view camera feeds, gripper poses, and sensor data.</p>
+<details>
+<summary><strong>View Sample Episodes in Rerun (10 samples)</strong></summary>
+<table>
+  <thead>
+      <tr>
+          <th>Sample</th>
+          <th>Link</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>1</td>
+          <td><a href="https://app.rerun.io/version/0.24.1/?url=https://storage.googleapis.com/zeroshot-public-rrds/puppet-high-res-rrd/1.rrd&renderer=webgl">Rerun Viewer #1</a></td>
+      </tr>
+      <tr>
+          <td>2</td>
+          <td><a href="https://app.rerun.io/version/0.24.1/?url=https://storage.googleapis.com/zeroshot-public-rrds/puppet-high-res-rrd/2.rrd&renderer=webgl">Rerun Viewer #2</a></td>
+      </tr>
+      <tr>
+          <td>3</td>
+          <td><a href="https://app.rerun.io/version/0.24.1/?url=https://storage.googleapis.com/zeroshot-public-rrds/puppet-high-res-rrd/3.rrd&renderer=webgl">Rerun Viewer #3</a></td>
+      </tr>
+      <tr>
+          <td>4</td>
+          <td><a href="https://app.rerun.io/version/0.24.1/?url=https://storage.googleapis.com/zeroshot-public-rrds/puppet-high-res-rrd/4.rrd&renderer=webgl">Rerun Viewer #4</a></td>
+      </tr>
+      <tr>
+          <td>5</td>
+          <td><a href="https://app.rerun.io/version/0.24.1/?url=https://storage.googleapis.com/zeroshot-public-rrds/puppet-high-res-rrd/5.rrd&renderer=webgl">Rerun Viewer #5</a></td>
+      </tr>
+      <tr>
+          <td>6</td>
+          <td><a href="https://app.rerun.io/version/0.24.1/?url=https://storage.googleapis.com/zeroshot-public-rrds/puppet-high-res-rrd/6.rrd&renderer=webgl">Rerun Viewer #6</a></td>
+      </tr>
+      <tr>
+          <td>7</td>
+          <td><a href="https://app.rerun.io/version/0.24.1/?url=https://storage.googleapis.com/zeroshot-public-rrds/puppet-high-res-rrd/7.rrd&renderer=webgl">Rerun Viewer #7</a></td>
+      </tr>
+      <tr>
+          <td>8</td>
+          <td><a href="https://app.rerun.io/version/0.24.1/?url=https://storage.googleapis.com/zeroshot-public-rrds/puppet-high-res-rrd/8.rrd&renderer=webgl">Rerun Viewer #8</a></td>
+      </tr>
+      <tr>
+          <td>9</td>
+          <td><a href="https://app.rerun.io/version/0.24.1/?url=https://storage.googleapis.com/zeroshot-public-rrds/puppet-high-res-rrd/9.rrd&renderer=webgl">Rerun Viewer #9</a></td>
+      </tr>
+      <tr>
+          <td>10</td>
+          <td><a href="https://app.rerun.io/version/0.24.1/?url=https://storage.googleapis.com/zeroshot-public-rrds/puppet-high-res-rrd/10.rrd&renderer=webgl">Rerun Viewer #10</a></td>
+      </tr>
+  </tbody>
+</table>
+</details>
+<hr>
+<h2 id="dataset-and-usage">Dataset and Usage<a hidden class="anchor" aria-hidden="true" href="#dataset-and-usage">#</a></h2>
+<p>The SF Fold dataset is available on Hugging Face:</p>
+<blockquote>
+<p><strong>Download</strong>: <a href="https://huggingface.co/datasets/zeroshotdata/sf_fold">huggingface.co/datasets/zeroshotdata/sf_fold</a></p>
+</blockquote>
+<p>The dataset focuses on folding and manipulation tasks, providing synchronized multi-view recordings suitable for:</p>
+<table>
+  <thead>
+      <tr>
+          <th>Application</th>
+          <th>Description</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td><strong>Imitation Learning</strong></td>
+          <td>Training policies from human demonstrations</td>
+      </tr>
+      <tr>
+          <td><strong>Diffusion Policy</strong></td>
+          <td>Learning manipulation behaviors through diffusion models</td>
+      </tr>
+      <tr>
+          <td><strong>Multi-view Fusion</strong></td>
+          <td>Algorithms leveraging multiple camera perspectives</td>
+      </tr>
+      <tr>
+          <td><strong>Temporal Modeling</strong></td>
+          <td>Models reasoning about action sequences over time</td>
+      </tr>
+  </tbody>
+</table>
+<hr>
+<p><em>For more details on the original UMI approach that inspired this work, see the <a href="https://arxiv.org/abs/2402.10329">paper</a> and <a href="https://umi-gripper.github.io/">project page</a>.</em></p>
+<style>
+.img-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  cursor: zoom-out;
+}
+.img-overlay img {
+  max-width: 95%;
+  max-height: 95%;
+  object-fit: contain;
+}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.zoomable-img').forEach(function(img) {
+    img.addEventListener('click', function() {
+      const overlay = document.createElement('div');
+      overlay.className = 'img-overlay';
+      const enlargedImg = document.createElement('img');
+      enlargedImg.src = img.src;
+      enlargedImg.alt = img.alt;
+      overlay.appendChild(enlargedImg);
+      document.body.appendChild(overlay);
+      document.body.style.overflow = 'hidden';
+      overlay.addEventListener('click', function() {
+        overlay.remove();
+        document.body.style.overflow = '';
+      });
+    });
+  });
+});
+</script>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+    </ul>
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span>&copy; 2026 <a href="http://localhost:1313/">Julien Rineau</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

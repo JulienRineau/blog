@@ -1,7 +1,7 @@
 ---
 title: "LoRA Instruction Tuning Implementation"
 date: 2024-01-18
-draft: false
+draft: true
 ShowToc: true
 ---
 Following my previous GPT-2 pretraining project, this is clean pipeline for fine-tuning with a "from scratch" implementation of LoRA that can be reused for other project. I'm choosing GPT-2 because I'm renting a small GPU for the experiment with a small memory but this can be reproduced with any other transformer model.

@@ -6,12 +6,12 @@
     <description>Recent content on Julien Rineau</description>
     <generator>Hugo -- 0.141.0</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 16 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 16 Jan 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>World Models for Human Manipulation</title>
       <link>http://localhost:1313/posts/vid2world-human/</link>
-      <pubDate>Thu, 16 Jan 2025 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 16 Jan 2026 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/vid2world-human/</guid>
       <description>&lt;p&gt;I trained a world model that predicts how humans manipulate objects from a single image and an action sequence.&lt;/p&gt;
 &lt;video autoplay loop muted playsinline style=&#34;width: 100%; max-width: 800px; display: block; margin: 0 auto;&#34;&gt;
@@ -21,9 +21,17 @@
 &lt;p&gt;The premise is simple: if you can accurately simulate what happens when a human performs an action, you don&amp;rsquo;t need a physical robot to learn manipulation. A policy can explore thousands of candidate action sequences in imagination, evaluating outcomes before committing to real-world execution. The bottleneck shifts from expensive robot time to GPU compute.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>Large-Scale Robotics Data Collection with UMI-Style Grippers</title>
+      <link>http://localhost:1313/posts/sf-fold-dataset/</link>
+      <pubDate>Sat, 01 Nov 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/sf-fold-dataset/</guid>
+      <description>&lt;p style=&#34;text-align: center; color: #888; font-size: 0.85rem; margin-bottom: 1.5rem;&#34;&gt;(Additional contributors, alphabetically: Laz Kopits, Ryan Leong, Sheel Taskar, Daryl Yang, William Zang)&lt;/p&gt;
+&lt;p&gt;Building robust robotic manipulation policies requires diverse, high-quality demonstration data at scale. The challenge lies not just in collecting data, but in doing so reliably across multiple devices while maintaining temporal synchronization and handling the inevitable network disruptions of real-world deployments. This post details the system architecture behind the &lt;strong&gt;&lt;a href=&#34;https://huggingface.co/datasets/zeroshotdata/sf_fold&#34;&gt;SF Fold dataset&lt;/a&gt;&lt;/strong&gt;, a large-scale robotics manipulation dataset collected using UMI-style grippers.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>VR Teleoperation for Bimanual Robots</title>
       <link>http://localhost:1313/posts/quest-teleoperation/</link>
-      <pubDate>Wed, 15 Jan 2025 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 01 Oct 2024 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/quest-teleoperation/</guid>
       <description>&lt;p&gt;I built a system that lets you control a bimanual robot using a Meta Quest headset. Put on the headset, grab the controllers, and a Trossen AI Mobile robot mirrors your arm movements in real-time through inverse kinematics. The code is available on request.&lt;/p&gt;
 &lt;p&gt;[VIDEO_REAL_ROBOT_PLACEHOLDER: Full teleoperation demo - controlling the real robot]&lt;/p&gt;
@@ -68,29 +76,6 @@
 &lt;h3 id=&#34;classifier-free-guidance&#34;&gt;Classifier-free guidance&lt;/h3&gt;
 \[ \hat{\varepsilon}_\theta(x_t, c) = \varepsilon_\theta(x_t, \emptyset) + s \cdot (\varepsilon_\theta(x_t, c) - \varepsilon_\theta(x_t, \emptyset))\]&lt;p&gt;
 Where $c$ is the condition, $\emptyset$ is a null condition, and $s &amp;gt; 1$ is the guidance scale.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Wav2Vec 2.0 Implementation</title>
-      <link>http://localhost:1313/posts/wav2vec2/</link>
-      <pubDate>Wed, 20 Mar 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/wav2vec2/</guid>
-      <description>&lt;p&gt;A Wav2Vec 2.0 implementation using PyTorch Lightning. This project aims to create a clean, modifiable building block for speech reco&lt;/p&gt;
-&lt;p&gt;gnition research. It uses common tools for optimized training and effective monitoring. The implementation includes code for model training, dataset preparation, and evaluation. This page also details the results of pretraining on the Libri-Speech dataset.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/JulienRineau/wav2vec&#34;&gt;Code Repository&lt;/a&gt;&lt;/p&gt;
-&lt;h2 id=&#34;architecture&#34;&gt;Architecture&lt;/h2&gt;
-&lt;p&gt;&lt;img alt=&#34;Wav2Vec Architecture&#34; src=&#34;http://localhost:1313/img/wav2vec2/architechture_paper.png&#34;&gt;
-My implementation closely follows the Wav2Vec 2.0 BASE model architecture:&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>LoRA Instruction Tuning Implementation</title>
-      <link>http://localhost:1313/posts/rlhf/</link>
-      <pubDate>Thu, 18 Jan 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/rlhf/</guid>
-      <description>&lt;p&gt;Following my previous GPT-2 pretraining project, this is clean pipeline for fine-tuning with a &amp;ldquo;from scratch&amp;rdquo; implementation of LoRA that can be reused for other project. I&amp;rsquo;m choosing GPT-2 because I&amp;rsquo;m renting a small GPU for the experiment with a small memory but this can be reproduced with any other transformer model.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/JulienRineau/gpt2-workflow&#34;&gt;Code Repository&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;Qwen2 benchmark comparison&#34; src=&#34;http://localhost:1313/img/qwen-rlhf/qwen2-benchmark.jpg&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;dataset&#34;&gt;Dataset&lt;/h2&gt;
-&lt;p&gt;I used the Alpaca-GPT4 dataset from Stanford that contains 52K instruction-following data generated by GPT-4. Each row of the dataset contains an instruction, an optional input that provide context, and an output:&lt;/p&gt;</description>
     </item>
     <item>
       <title>GPT-2 Pretraining</title>

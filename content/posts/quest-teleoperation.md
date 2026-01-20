@@ -1,6 +1,6 @@
 ---
 title: "VR Teleoperation for Bimanual Robots"
-date: 2025-01-15
+date: 2024-10-01
 draft: false
 ShowToc: true
 ---

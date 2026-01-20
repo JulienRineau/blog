@@ -1,7 +1,7 @@
 ---
 title: "Wav2Vec 2.0 Implementation"
 date: 2024-03-20
-draft: false
+draft: true
 ShowToc: true
 categories: ["recipe"]
 ---
