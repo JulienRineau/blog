@@ -62,7 +62,7 @@ Each hand contributes 10 dimensions: 3D position delta, 6D rotation (two columns
 | Left | 10D | 3D position delta + 6D rotation + 1D width |
 | Right | 10D | 3D position delta + 6D rotation + 1D width |
 
-I collected 5,248 episodes of bimanual t-shirt folding using VR teleoperation (details in the [teleoperation post](/posts/quest-teleoperation)). The fisheye camera provides a wide field of view that captures both hands throughout the manipulation. Training ran at 320×512 resolution with batch size 2, gradient accumulation, learning rate 1e-5, and FP16 mixed precision.
+I collected 5,248 episodes of bimanual t-shirt folding using UMI-style grippers (details in the [SF Fold dataset post](/posts/sf-fold-dataset)). The fisheye camera provides a wide field of view that captures both hands throughout the manipulation. Training ran at 320×512 resolution with batch size 2, gradient accumulation, learning rate 1e-5, and FP16 mixed precision.
 
 ## What the Model Learned
 
