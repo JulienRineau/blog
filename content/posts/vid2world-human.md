@@ -8,14 +8,12 @@ ShowToc: true
 I trained a world model that predicts how humans manipulate objects from a single image and an action sequence.
 
 <video autoplay loop muted playsinline style="width: 100%; max-width: 800px; display: block; margin: 0 auto;">
-  <source src="/img/vid2world/comparison.mp4" type="video/mp4">
+  <source src="../img/vid2world/comparison.mp4" type="video/mp4">
 </video>
 
 *Given the first frame and 16-step action sequence, the model predicts future manipulation frames.*
 
-The premise is simple: if you can accurately simulate what happens when a human performs an action, you don't need a physical robot to learn manipulation. A policy can explore thousands of candidate action sequences in imagination, evaluating outcomes before committing to real-world execution. The bottleneck shifts from expensive robot time to GPU compute.
-
-This isn't just theoretical. 1X Technologies recently demonstrated that world models can drive real humanoid robots, using video prediction to learn tasks with minimal robot-specific data [^2]. Their insight: video diffusion models pretrained on internet-scale data already understand how the world moves—physics, object permanence, hand-object interactions. The question becomes: can we steer that knowledge with actions?
+The premise is simple: if you can accurately simulate what happens when a human performs an action, you don't need a physical robot to learn manipulation. A policy can explore thousands of candidate action sequences in imagination, evaluating outcomes before committing to real-world execution. This isn't just theoretical: 1X Technologies recently demonstrated that world models can drive real humanoid robots [^2], using video diffusion models pretrained on internet-scale data that already understand physics, object permanence, and hand-object interactions. The question becomes: can we steer that knowledge with actions?
 
 ## The Core Insight
 
@@ -34,7 +32,7 @@ During training, I have access to full video sequences with paired actions. The 
 
 Why does this matter? At inference, the model generates autoregressively—it has clean past frames and must generate noisy future frames. By training with variable noise levels, the model learns to leverage clean context to reconstruct corrupted frames. Uniform noise would never teach this skill.
 
-<img src="/img/vid2world/training.svg" alt="Training architecture" style="max-width: 500px; display: block; margin: 0 auto;">
+<img src="../img/vid2world/training.svg" alt="Training architecture" style="max-width: 500px; display: block; margin: 0 auto;">
 
 ### Inference
 
@@ -42,7 +40,7 @@ At test time, I only have the first frame. Generation proceeds one frame at a ti
 
 This is where causal attention pays off. Because the model never saw future frames during training, it learned to make predictions from past context alone. KV-caching stores attention keys and values from previously generated frames, so I don't recompute the entire sequence at each step.
 
-<img src="/img/vid2world/inference.svg" alt="Inference architecture" style="max-width: 500px; display: block; margin: 0 auto;">
+<img src="../img/vid2world/inference.svg" alt="Inference architecture" style="max-width: 500px; display: block; margin: 0 auto;">
 
 ## Method
 
@@ -77,13 +75,13 @@ To verify it learned generalizable dynamics rather than memorizing trajectories,
 <div style="position: relative; max-width: 800px; margin: 0 auto;">
   <div id="carousel" style="display: flex; overflow-x: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth; border-radius: 8px;">
     <video style="flex: 0 0 100%; scroll-snap-align: start; width: 100%;" autoplay loop muted playsinline>
-      <source src="/img/vid2world/crossswap4.mp4" type="video/mp4">
+      <source src="../img/vid2world/crossswap4.mp4" type="video/mp4">
     </video>
     <video style="flex: 0 0 100%; scroll-snap-align: start; width: 100%;" autoplay loop muted playsinline>
-      <source src="/img/vid2world/crossswap2.mp4" type="video/mp4">
+      <source src="../img/vid2world/crossswap2.mp4" type="video/mp4">
     </video>
     <video style="flex: 0 0 100%; scroll-snap-align: start; width: 100%;" autoplay loop muted playsinline>
-      <source src="/img/vid2world/crossswap3.mp4" type="video/mp4">
+      <source src="../img/vid2world/crossswap3.mp4" type="video/mp4">
     </video>
   </div>
   <button onclick="document.getElementById('carousel').scrollBy({left: -document.getElementById('carousel').offsetWidth})" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer;">&#10094;</button>

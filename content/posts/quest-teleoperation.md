@@ -13,7 +13,7 @@ I built a system that lets you control a bimanual robot using a Meta Quest heads
 
 The system bridges consumer VR hardware to research-grade robotics through a streaming pipeline optimized for low latency.
 
-<img src="/img/quest-teleoperation/architecture.svg" alt="System architecture" style="max-width: 450px; display: block; margin: 0 auto;">
+<img src="../img/quest-teleoperation/architecture.svg" alt="System architecture" style="max-width: 450px; display: block; margin: 0 auto;">
 
 The Quest runs a native Android app built with OpenXR that captures controller poses at 60 Hz. Rather than requiring external network infrastructure, the Quest itself runs an embedded MQTT broker—the robot subscribes directly to the headset's IP address, keeping latency under 5ms on a local network.
 
@@ -22,7 +22,7 @@ A key design choice: hand poses are streamed relative to the headset, not in wor
 ## The Pipeline
 
 <video controls style="max-width: 100%; display: block; margin: 0 auto;">
-  <source src="/img/quest-teleoperation/questtracking.mp4" type="video/mp4">
+  <source src="../img/quest-teleoperation/questtracking.mp4" type="video/mp4">
 </video>
 
 The web interface above shows the Quest streaming pose data in real-time. Control is grip-gated: squeeze to engage, release to disengage. When you squeeze, the system captures your current hand position and the robot's end-effector pose as reference points. Movement is then applied as deltas from these references—you can release, reposition your hands comfortably, and re-engage without the robot jumping.

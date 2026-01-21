@@ -10,7 +10,7 @@ ShowToc: true
 Building robust robotic manipulation policies requires diverse, high-quality demonstration data at scale. The challenge lies not just in collecting data, but in doing so reliably across multiple devices while maintaining temporal synchronization and handling the inevitable network disruptions of real-world deployments. This post details the system architecture behind the **[SF Fold dataset](https://huggingface.co/datasets/zeroshotdata/sf_fold)**, a large-scale robotics manipulation dataset collected using UMI-style grippers.
 
 <video autoplay loop muted playsinline style="max-width: 100%; display: block; margin: 0 auto;">
-  <source src="/img/sf-fold/demo_video_web.mp4" type="video/mp4">
+  <source src="../img/sf-fold/demo_video_web.mp4" type="video/mp4">
 </video>
 
 > **Our Goal**: Take the UMI concept from research prototype to **production-ready hardware**: a device anyone can pick up and use without specialized expertise, seamlessly integrated into cloud-based post-processing pipelines for scalable data collection.
@@ -86,7 +86,7 @@ The OAK-D Wide provides stereo vision for 6-DoF pose tracking using ORB-SLAM3. T
 
   // Load OBJ
   const loader = new THREE.OBJLoader();
-  loader.load('/img/sf-fold/oak_d_wide.obj',
+  loader.load('../img/sf-fold/oak_d_wide.obj',
     function(object) {
       // Center the model
       const box = new THREE.Box3().setFromObject(object);
@@ -144,7 +144,7 @@ The OAK-D Wide provides stereo vision for 6-DoF pose tracking using ORB-SLAM3. T
 
 The system follows a distributed architecture where multiple puppets coordinate through a central MQTT broker running on the Ego Puppet. This enables synchronized multi-view data collection while maintaining robustness against network failures.
 
-<img src="/img/sf-fold/puppet_communication.png" alt="Puppet Communication Architecture" class="zoomable-img" style="width: 100%; max-width: 900px; display: block; margin: 1.5rem auto; border-radius: 4px; cursor: zoom-in;">
+<img src="../img/sf-fold/puppet_communication.png" alt="Puppet Communication Architecture" class="zoomable-img" style="width: 100%; max-width: 900px; display: block; margin: 1.5rem auto; border-radius: 4px; cursor: zoom-in;">
 <p style="text-align: center; font-style: italic; color: #666; margin-top: -0.5rem;">Architecture showing Right, Ego, and Left Puppets communicating via the central EgoBroker. Components include MQTTCommandListener, ButtonNode, and sensor_app. <em>(Click to enlarge)</em></p>
 
 ### Puppet Communication
@@ -201,7 +201,7 @@ The system implements a **dual-broker architecture** balancing reliability with 
 
 The data flow spans from physical demonstration through cloud storage, with multiple checkpoints for reliability.
 
-<img src="/img/sf-fold/sequence_diagram.png" alt="Data Flow Sequence Diagram" class="zoomable-img" style="width: 100%; max-width: 900px; display: block; margin: 1.5rem auto; border-radius: 4px; cursor: zoom-in;">
+<img src="../img/sf-fold/sequence_diagram.png" alt="Data Flow Sequence Diagram" class="zoomable-img" style="width: 100%; max-width: 900px; display: block; margin: 1.5rem auto; border-radius: 4px; cursor: zoom-in;">
 <p style="text-align: center; font-style: italic; color: #666; margin-top: -0.5rem;">Complete data flow between Demonstrator, Puppet, MQTT Brokers, Flask API, Cloud SQL, GCS, and Pub/Sub. <em>(Click to enlarge)</em></p>
 
 ### Status Publishing
