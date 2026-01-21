@@ -7,9 +7,7 @@ ShowToc: true
 
 I trained a world model that predicts how humans manipulate objects from a single image and an action sequence.
 
-<video autoplay loop muted playsinline style="width: 100%; max-width: 800px; display: block; margin: 0 auto;">
-  <source src="../img/vid2world/comparison.mp4" type="video/mp4">
-</video>
+{{< video src="/img/vid2world/comparison.mp4" autoplay="true" loop="true" muted="true" playsinline="true" style="width: 100%; max-width: 800px; display: block; margin: 0 auto;" >}}
 
 *Given the first frame and 16-step action sequence, the model predicts future manipulation frames.*
 
@@ -32,7 +30,7 @@ During training, I have access to full video sequences with paired actions. The 
 
 Why does this matter? At inference, the model generates autoregressively—it has clean past frames and must generate noisy future frames. By training with variable noise levels, the model learns to leverage clean context to reconstruct corrupted frames. Uniform noise would never teach this skill.
 
-<img src="../img/vid2world/training.svg" alt="Training architecture" style="max-width: 500px; display: block; margin: 0 auto;">
+{{< img src="/img/vid2world/training.svg" alt="Training architecture" style="max-width: 500px; display: block; margin: 0 auto;" >}}
 
 ### Inference
 
@@ -40,7 +38,7 @@ At test time, I only have the first frame. Generation proceeds one frame at a ti
 
 This is where causal attention pays off. Because the model never saw future frames during training, it learned to make predictions from past context alone. KV-caching stores attention keys and values from previously generated frames, so I don't recompute the entire sequence at each step.
 
-<img src="../img/vid2world/inference.svg" alt="Inference architecture" style="max-width: 500px; display: block; margin: 0 auto;">
+{{< img src="/img/vid2world/inference.svg" alt="Inference architecture" style="max-width: 500px; display: block; margin: 0 auto;" >}}
 
 ## Method
 
@@ -72,23 +70,24 @@ The model captures the broad strokes: hand trajectories follow commanded actions
 
 To verify it learned generalizable dynamics rather than memorizing trajectories, I ran an action cross-swap: take frame A with actions from episode B. The grid below shows ground truth (diagonal) versus swapped actions (off-diagonal)—same starting frame, different action sequences producing different outcomes.
 
+{{< baseurl >}}
 <div style="position: relative; max-width: 800px; margin: 0 auto;">
   <div id="carousel" style="display: flex; overflow-x: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth; border-radius: 8px;">
     <video style="flex: 0 0 100%; scroll-snap-align: start; width: 100%;" autoplay loop muted playsinline>
-      <source src="../img/vid2world/crossswap4.mp4" type="video/mp4">
+      <source data-src="img/vid2world/crossswap4.mp4" type="video/mp4">
     </video>
     <video style="flex: 0 0 100%; scroll-snap-align: start; width: 100%;" autoplay loop muted playsinline>
-      <source src="../img/vid2world/crossswap2.mp4" type="video/mp4">
+      <source data-src="img/vid2world/crossswap2.mp4" type="video/mp4">
     </video>
     <video style="flex: 0 0 100%; scroll-snap-align: start; width: 100%;" autoplay loop muted playsinline>
-      <source src="../img/vid2world/crossswap3.mp4" type="video/mp4">
+      <source data-src="img/vid2world/crossswap3.mp4" type="video/mp4">
     </video>
   </div>
   <button onclick="document.getElementById('carousel').scrollBy({left: -document.getElementById('carousel').offsetWidth})" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer;">&#10094;</button>
   <button onclick="document.getElementById('carousel').scrollBy({left: document.getElementById('carousel').offsetWidth})" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer;">&#10095;</button>
   <div id="carousel-dots" style="display: flex; justify-content: center; gap: 8px; margin-top: 10px;"></div>
 </div>
-<script>document.addEventListener("DOMContentLoaded",function(){var c=document.getElementById("carousel"),d=document.getElementById("carousel-dots");if(c&&d){var v=c.querySelectorAll("video");for(var i=0;i<v.length;i++){var dot=document.createElement("button");dot.style.cssText="width:10px;height:10px;border-radius:50%;border:none;background:#666;cursor:pointer";dot.setAttribute("data-i",i);dot.onclick=function(){c.scrollTo({left:c.offsetWidth*this.getAttribute("data-i")})};d.appendChild(dot)}function u(){var idx=Math.round(c.scrollLeft/c.offsetWidth);var dots=d.querySelectorAll("button");for(var j=0;j<dots.length;j++){dots[j].style.background=j===idx?"#fff":"#666"}}c.addEventListener("scroll",u);u()}});</script>
+<script>document.addEventListener("DOMContentLoaded",function(){var c=document.getElementById("carousel"),d=document.getElementById("carousel-dots");if(c&&d){var v=c.querySelectorAll("video");for(var i=0;i<v.length;i++){var src=v[i].querySelector("source");if(src&&src.dataset.src){src.src=SITE_BASE_URL+src.dataset.src;v[i].load()}var dot=document.createElement("button");dot.style.cssText="width:10px;height:10px;border-radius:50%;border:none;background:#666;cursor:pointer";dot.setAttribute("data-i",i);dot.onclick=function(){c.scrollTo({left:c.offsetWidth*this.getAttribute("data-i")})};d.appendChild(dot)}function u(){var idx=Math.round(c.scrollLeft/c.offsetWidth);var dots=d.querySelectorAll("button");for(var j=0;j<dots.length;j++){dots[j].style.background=j===idx?"#fff":"#666"}}c.addEventListener("scroll",u);u()}});</script>
 
 This tracks with findings from 1X: video prediction quality correlates with downstream task success [^2]. If the world model can't accurately predict what happens when you grasp a shirt corner, a policy trained on its rollouts will fail at the real task. Visual fidelity isn't vanity—it's a proxy for physical understanding.
 

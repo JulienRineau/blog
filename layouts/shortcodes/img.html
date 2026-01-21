@@ -1,0 +1,13 @@
+{{- $u := urls.Parse (.Get "src") -}}
+{{- $src := $u.String -}}
+{{- if not $u.IsAbs -}}
+  {{- $path := strings.TrimPrefix "./" $u.Path -}}
+  {{- $path = strings.TrimPrefix "/" $path -}}
+  {{- with resources.Get (printf "img/%s" $path) -}}
+    {{- $src = .RelPermalink -}}
+  {{- else -}}
+    {{- $src = printf "%s%s" $.Site.BaseURL (strings.TrimPrefix "/" ($u.Path)) -}}
+  {{- end -}}
+{{- end -}}
+{{- $style := .Get "style" | default "" | safeCSS -}}
+<img src="{{ $src }}" alt="{{ .Get "alt" }}" {{ with .Get "class" }}class="{{ . }}"{{ end }} {{ if $style }}style="{{ $style }}"{{ end }}>

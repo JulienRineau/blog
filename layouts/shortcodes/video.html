@@ -1,0 +1,15 @@
+{{- $u := urls.Parse (.Get "src") -}}
+{{- $src := $u.String -}}
+{{- if not $u.IsAbs -}}
+  {{- $path := strings.TrimPrefix "./" $u.Path -}}
+  {{- $path = strings.TrimPrefix "/" $path -}}
+  {{- with resources.Get (printf "img/%s" $path) -}}
+    {{- $src = .RelPermalink -}}
+  {{- else -}}
+    {{- $src = printf "%s%s" $.Site.BaseURL (strings.TrimPrefix "/" ($u.Path)) -}}
+  {{- end -}}
+{{- end -}}
+{{- $style := .Get "style" | default "max-width: 100%; display: block; margin: 0 auto;" | safeCSS -}}
+<video {{ if .Get "autoplay" }}autoplay{{ end }} {{ if .Get "loop" }}loop{{ end }} {{ if .Get "muted" }}muted{{ end }} {{ if .Get "playsinline" }}playsinline{{ end }} {{ if .Get "controls" }}controls{{ end }} style="{{ $style }}">
+  <source src="{{ $src }}" type="video/mp4">
+</video>
