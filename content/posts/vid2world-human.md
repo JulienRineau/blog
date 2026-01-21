@@ -74,13 +74,13 @@ To verify it learned generalizable dynamics rather than memorizing trajectories,
 <div style="position: relative; max-width: 800px; margin: 0 auto;">
   <div id="carousel" style="display: flex; overflow-x: hidden; scroll-snap-type: x mandatory; scroll-behavior: smooth; border-radius: 8px;">
     <video style="flex: 0 0 100%; scroll-snap-align: start; width: 100%;" autoplay loop muted playsinline>
-      <source data-src="img/vid2world/crossswap4.mp4" type="video/mp4">
+      <source data-src="img/vid2world/crossswap3.mp4" type="video/mp4">
     </video>
     <video style="flex: 0 0 100%; scroll-snap-align: start; width: 100%;" autoplay loop muted playsinline>
       <source data-src="img/vid2world/crossswap2.mp4" type="video/mp4">
     </video>
     <video style="flex: 0 0 100%; scroll-snap-align: start; width: 100%;" autoplay loop muted playsinline>
-      <source data-src="img/vid2world/crossswap3.mp4" type="video/mp4">
+      <source data-src="img/vid2world/crossswap4.mp4" type="video/mp4">
     </video>
   </div>
   <button onclick="document.getElementById('carousel').scrollBy({left: -document.getElementById('carousel').offsetWidth})" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer;">&#10094;</button>

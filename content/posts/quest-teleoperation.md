@@ -21,7 +21,7 @@ A key design choice: hand poses are streamed relative to the headset, not in wor
 
 ## The Pipeline
 
-{{< video src="/img/quest-teleoperation/questtracking.mp4" controls="true" style="max-width: 100%; display: block; margin: 0 auto;" >}}
+{{< video src="/img/quest-teleoperation/questtracking.mp4" autoplay="true" loop="true" muted="true" playsinline="true" style="max-width: 100%; display: block; margin: 0 auto;" >}}
 
 The web interface above shows the Quest streaming pose data in real-time. Control is grip-gated: squeeze to engage, release to disengage. When you squeeze, the system captures your current hand position and the robot's end-effector pose as reference points. Movement is then applied as deltas from these references—you can release, reposition your hands comfortably, and re-engage without the robot jumping.
 
