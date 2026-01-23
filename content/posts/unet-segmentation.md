@@ -78,9 +78,9 @@ mask = mask.squeeze(1)
 loss = torch.nn.functional.cross_entropy(logits, mask)
 ``` 
 ### Run
-The goal here is not to actually train the model on the whole dataset but instead to show that the pipeline works. The training is then done on a 1k datapoint subset until the model overfit (200 epochs). It took less than 20min on a single A100 GPU.
+The model was trained on the full ADE20K dataset for 80 epochs using DDP across 8xH100 GPUs. Total training time was 36 minutes.
 ![Training loss](/img/unet-segmentation/train_loss.png)
-![Training accuracy](/img/unet-segmentation/train_acc.png)
+![Validation mIoU](/img/unet-segmentation/val_miou.png)
 
 
 ## Results
