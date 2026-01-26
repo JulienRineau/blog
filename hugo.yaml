@@ -12,7 +12,7 @@ params:
       This blog is meant to document my experiments on Robotic, LLMs, Vision and other AI related subjects. Projects posts are written while I'm doing them so some might be finished and some might be waiting for completion. I hold a Master in Mechanical Engineering from UC Berkeley and now work as Machine Learning Engineer on vision/diffusion models for self-driving at Helm.ai. I also do some research on the side at UC Berkeley's Hybrid Robotic Lab.  
   socialIcons:
     - name: email
-      url: 'julien.rineau@berkeley.edu'
+      url: 'mailto:julien.rineau@berkeley.edu'
     - name: twitter
       url: https://x.com/julienrineau_?s=21&t=rXmba87rN9oIOcKX5c6Cmw
     - name: linkedin
