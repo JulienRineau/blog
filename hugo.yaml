@@ -7,14 +7,16 @@ params:
   math: true
   defaultTheme: auto
   homeInfoParams:
-    Title: "\U0001F44B Hi welcome to my page "
+    Title: "\U0001F44B Hi welcome to my page"
     Content: >-
-      This blog is meant to document my experiments on Robotic, LLMs, Vision and other AI related subjects. Projects posts are written while I'm doing them so some might be finished and some might be waiting for completion. I hold a Master in Mechanical Engineering from UC Berkeley and now work as Machine Learning Engineer on vision/diffusion models for self-driving at Helm.ai. I also do some research on the side at UC Berkeley's Hybrid Robotic Lab.  
+      This blog is meant to document my experiments on Robotics, LLMs, Vision and other AI-related subjects. Project posts are written while I'm doing them so some might be finished and some might be waiting for completion. I hold a Master in Mechanical Engineering from UC Berkeley and now work as a Research Engineer on vision/diffusion models for self-driving at Helm.ai. I also do some research on the side at UC Berkeley's Hybrid Robotic Lab.
   socialIcons:
+    - name: cv
+      url: '/julien_rineau_resume.pdf'
     - name: email
       url: 'mailto:julien.rineau@berkeley.edu'
-    - name: twitter
-      url: https://x.com/julienrineau_?s=21&t=rXmba87rN9oIOcKX5c6Cmw
+    - name: x
+      url: https://x.com/julienrineau_
     - name: linkedin
       url: https://linkedin.com/in/jrineau
   

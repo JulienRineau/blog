@@ -1,0 +1,17 @@
+{{- with site.Params.homeInfoParams }}
+<article class="first-entry home-info">
+    <header class="entry-header">
+        <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+            <img src="{{ "img/profile.jpg" | absURL }}" alt="Julien Rineau"
+                 style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;">
+            <h1 style="margin: 0;">{{ .Title | markdownify }}</h1>
+        </div>
+    </header>
+    <div class="entry-content">
+        {{ .Content | markdownify }}
+    </div>
+    <footer class="entry-footer">
+        {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
+    </footer>
+</article>
+{{- end -}}
