@@ -45,96 +45,106 @@ The OAK-D Wide provides stereo vision for 6-DoF pose tracking using ORB-SLAM3. T
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
-(function() {
+document.addEventListener('DOMContentLoaded', function() {
   const container = document.getElementById('oak-d-viewer');
   const loading = document.getElementById('viewer-loading');
 
-  // Scene setup
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.001, 1000);
-  camera.position.set(0.25, 0.15, 0.25);
-
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setClearColor(0x000000, 0);
-  container.appendChild(renderer.domElement);
-
-  // Lighting
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-  scene.add(ambientLight);
-
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-  directionalLight.position.set(5, 10, 7);
-  scene.add(directionalLight);
-
-  const backLight = new THREE.DirectionalLight(0x4a90d9, 0.4);
-  backLight.position.set(-5, -5, -5);
-  scene.add(backLight);
-
-  // Controls
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.05;
-  controls.rotateSpeed = 0.8;
-  controls.enableZoom = true;
-  controls.minDistance = 0.05;
-  controls.maxDistance = 0.8;
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = 1.0;
-
-  // Load OBJ
-  const loader = new THREE.OBJLoader();
-  loader.load(SITE_BASE_URL + 'img/sf-fold/oak_d_wide.obj',
-    function(object) {
-      // Center the model
-      const box = new THREE.Box3().setFromObject(object);
-      const center = box.getCenter(new THREE.Vector3());
-      object.position.sub(center);
-
-      // Apply material
-      object.traverse(function(child) {
-        if (child instanceof THREE.Mesh) {
-          child.material = new THREE.MeshPhongMaterial({
-            color: 0xaaaaaa,
-            specular: 0x555555,
-            shininess: 40
-          });
-        }
-      });
-
-      scene.add(object);
-      loading.style.display = 'none';
-    },
-    function(xhr) {
-      const percent = Math.round((xhr.loaded / xhr.total) * 100);
-      loading.textContent = 'Loading 3D model... ' + percent + '%';
-    },
-    function(error) {
-      loading.textContent = 'Error loading model';
-      console.error('OBJ load error:', error);
-    }
-  );
-
-  // Animation loop
-  function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
+  // Check WebGL support
+  if (!window.WebGLRenderingContext) {
+    loading.textContent = '3D viewer requires WebGL support';
+    return;
   }
-  animate();
 
-  // Handle resize
-  window.addEventListener('resize', function() {
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
+  try {
+    // Scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.001, 1000);
+    camera.position.set(0.25, 0.15, 0.25);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
-  });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
 
-  // Stop auto-rotate on interaction
-  container.addEventListener('mousedown', () => controls.autoRotate = false);
-  container.addEventListener('touchstart', () => controls.autoRotate = false);
-})();
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(5, 10, 7);
+    scene.add(directionalLight);
+
+    const backLight = new THREE.DirectionalLight(0x4a90d9, 0.4);
+    backLight.position.set(-5, -5, -5);
+    scene.add(backLight);
+
+    // Controls
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.rotateSpeed = 0.8;
+    controls.enableZoom = true;
+    controls.minDistance = 0.05;
+    controls.maxDistance = 0.8;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 1.0;
+
+    // Load OBJ
+    const loader = new THREE.OBJLoader();
+    loader.load(SITE_BASE_URL + 'img/sf-fold/oak_d_wide.obj',
+      function(object) {
+        const box = new THREE.Box3().setFromObject(object);
+        const center = box.getCenter(new THREE.Vector3());
+        object.position.sub(center);
+
+        object.traverse(function(child) {
+          if (child instanceof THREE.Mesh) {
+            child.material = new THREE.MeshPhongMaterial({
+              color: 0xaaaaaa,
+              specular: 0x555555,
+              shininess: 40
+            });
+          }
+        });
+
+        scene.add(object);
+        loading.style.display = 'none';
+      },
+      function(xhr) {
+        const percent = Math.round((xhr.loaded / xhr.total) * 100);
+        loading.textContent = 'Loading 3D model... ' + percent + '%';
+      },
+      function(error) {
+        loading.textContent = 'Error loading model';
+        console.error('OBJ load error:', error);
+      }
+    );
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Handle resize
+    window.addEventListener('resize', function() {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    // Stop auto-rotate on interaction
+    container.addEventListener('mousedown', () => controls.autoRotate = false);
+    container.addEventListener('touchstart', () => controls.autoRotate = false);
+
+  } catch (e) {
+    loading.textContent = 'Unable to load 3D viewer';
+    console.error('WebGL error:', e);
+  }
+});
 </script>
 
 ---
