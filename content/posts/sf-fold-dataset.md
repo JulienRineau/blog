@@ -434,24 +434,22 @@ The dataset includes interactive 3D visualizations using [Rerun](https://rerun.i
 
 ---
 
-## Dataset and Usage
+## Dataset
 
 The SF Fold dataset is available on Hugging Face:
 
 > **Download**: [huggingface.co/datasets/zeroshotdata/sf_fold](https://huggingface.co/datasets/zeroshotdata/sf_fold)
 
-The dataset focuses on folding and manipulation tasks, providing synchronized multi-view recordings suitable for:
+| Metric | Value |
+|--------|-------|
+| Locations | 31 |
+| Environments | 212 |
+| Episodes | 5,513 |
+| Total Duration | 100 hours |
 
-| Application | Description |
-|-------------|-------------|
-| **Imitation Learning** | Training policies from human demonstrations |
-| **Diffusion Policy** | Learning manipulation behaviors through diffusion models |
-| **Multi-view Fusion** | Algorithms leveraging multiple camera perspectives |
-| **Temporal Modeling** | Models reasoning about action sequences over time |
+{{< img src="/img/sf-fold/dataset_stats.png" alt="Dataset Statistics" class="zoomable-img" style="width: 100%; max-width: 350px; display: block; margin: 1.5rem auto; border-radius: 4px; cursor: zoom-in;" >}}
 
 ---
-
-*For more details on the original UMI approach that inspired this work, see the [paper](https://arxiv.org/abs/2402.10329) and [project page](https://umi-gripper.github.io/).*
 
 <style>
 .img-overlay {
