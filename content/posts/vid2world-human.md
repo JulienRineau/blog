@@ -64,6 +64,8 @@ Each hand contributes 10 dimensions: 3D position delta, 6D rotation (two columns
 
 This precise action representation enables tighter action-outcome coupling than video-only approaches that infer actions from pixels. Ground truth end-effector poses allow the model to learn fine-grained control, essential for deformable object manipulation where subtle actions matter.
 
+{{< video src="/img/vid2world/sf-fold-demo.mp4" autoplay="true" loop="true" muted="true" playsinline="true" style="max-width: 100%; display: block; margin: 0 auto; margin-bottom: 1.5rem;" >}}
+
 The training data consists of 5,248 episodes of bimanual t-shirt folding captured with UMI-style grippers. The fisheye camera provides a wide field of view that captures both hands throughout the manipulation. Training ran at 320×512 resolution with batch size 2, gradient accumulation, learning rate 1e-5, and FP16 mixed precision.
 
 ## What the Model Learned
