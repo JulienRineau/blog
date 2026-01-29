@@ -77,7 +77,7 @@
       var isVideo = item.tagName === 'VIDEO';
       if (isVideo) {
         var src = item.querySelector('source') ? item.querySelector('source').src : item.src;
-        carouselHTML += '<div class="media-overlay__carousel-item"><video src="' + src + '" controls ' + (item.loop ? 'loop' : '') + '></video></div>';
+        carouselHTML += '<div class="media-overlay__carousel-item"><video src="' + src + '" controls autoplay loop muted playsinline></video></div>';
       } else {
         carouselHTML += '<div class="media-overlay__carousel-item"><img src="' + item.src + '" alt="' + (item.alt || '') + '"></div>';
       }
