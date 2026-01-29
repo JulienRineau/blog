@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 The system follows a distributed architecture where multiple puppets coordinate through a central MQTT broker running on the Ego Puppet. This enables synchronized multi-view data collection while maintaining robustness against network failures.
 
-{{< img src="/img/sf-fold/puppet_communication.png" alt="Puppet Communication Architecture" class="zoomable-img" style="width: 100%; max-width: 900px; display: block; margin: 1.5rem auto; border-radius: 4px; cursor: zoom-in;" >}}
+{{< img src="/img/sf-fold/puppet_communication.png" alt="Puppet Communication Architecture" style="width: 100%; max-width: 900px; display: block; margin: 1.5rem auto; border-radius: 4px;" >}}
 <p style="text-align: center; font-style: italic; color: #666; margin-top: -0.5rem;">Architecture showing Right, Ego, and Left Puppets communicating via the central EgoBroker. Components include MQTTCommandListener, ButtonNode, and sensor_app. <em>(Click to enlarge)</em></p>
 
 ### Puppet Communication
@@ -210,7 +210,7 @@ The system implements a **dual-broker architecture** balancing reliability with 
 
 The data flow spans from physical demonstration through cloud storage, with multiple checkpoints for reliability.
 
-{{< img src="/img/sf-fold/sequence_diagram.png" alt="Data Flow Sequence Diagram" class="zoomable-img" style="width: 100%; max-width: 900px; display: block; margin: 1.5rem auto; border-radius: 4px; cursor: zoom-in;" >}}
+{{< img src="/img/sf-fold/sequence_diagram.png" alt="Data Flow Sequence Diagram" style="width: 100%; max-width: 900px; display: block; margin: 1.5rem auto; border-radius: 4px;" >}}
 <p style="text-align: center; font-style: italic; color: #666; margin-top: -0.5rem;">Complete data flow between Demonstrator, Puppet, MQTT Brokers, Flask API, Cloud SQL, GCS, and Pub/Sub. <em>(Click to enlarge)</em></p>
 
 ### Status Publishing
@@ -457,48 +457,6 @@ The SF Fold dataset is available on Hugging Face:
 | Episodes | 5,513 |
 | Total Duration | 100 hours |
 
-{{< img src="/img/sf-fold/dataset_stats.png" alt="Dataset Statistics" class="zoomable-img" style="width: 100%; max-width: 350px; display: block; margin: 1.5rem auto; border-radius: 4px; cursor: zoom-in;" >}}
+{{< img src="/img/sf-fold/dataset_stats.png" alt="Dataset Statistics" style="width: 100%; max-width: 350px; display: block; margin: 1.5rem auto; border-radius: 4px;" >}}
 
 ---
-
-<style>
-.img-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  cursor: zoom-out;
-}
-.img-overlay img {
-  max-width: 95%;
-  max-height: 95%;
-  object-fit: contain;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.zoomable-img').forEach(function(img) {
-    img.addEventListener('click', function() {
-      const overlay = document.createElement('div');
-      overlay.className = 'img-overlay';
-      const enlargedImg = document.createElement('img');
-      enlargedImg.src = img.src;
-      enlargedImg.alt = img.alt;
-      overlay.appendChild(enlargedImg);
-      document.body.appendChild(overlay);
-      document.body.style.overflow = 'hidden';
-      overlay.addEventListener('click', function() {
-        overlay.remove();
-        document.body.style.overflow = '';
-      });
-    });
-  });
-});
-</script>

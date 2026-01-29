@@ -10,4 +10,5 @@
   {{- end -}}
 {{- end -}}
 {{- $style := .Get "style" | default "" | safeCSS -}}
-<img src="{{ $src }}" alt="{{ .Get "alt" }}" {{ with .Get "class" }}class="{{ . }}"{{ end }} {{ if $style }}style="{{ $style }}"{{ end }}>
+{{- $nozoom := .Get "nozoom" | default false -}}
+<img src="{{ $src }}" alt="{{ .Get "alt" }}" {{ with .Get "class" }}class="{{ . }}"{{ end }} {{ if $style }}style="{{ $style }}"{{ end }} {{ if not $nozoom }}data-zoomable="true"{{ end }}>

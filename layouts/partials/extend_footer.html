@@ -1,0 +1,237 @@
+<!-- Media Overlay Script -->
+<script>
+(function() {
+  'use strict';
+
+  // Create overlay element once
+  const overlay = document.createElement('div');
+  overlay.className = 'media-overlay';
+  overlay.innerHTML = '<button class="media-overlay__close" aria-label="Close">&times;</button><div class="media-overlay__content"></div>';
+  document.body.appendChild(overlay);
+
+  const content = overlay.querySelector('.media-overlay__content');
+  const closeBtn = overlay.querySelector('.media-overlay__close');
+
+  let currentCarouselIndex = 0;
+  let carouselItems = [];
+  let originalVideo = null;
+
+  function closeOverlay() {
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+
+    const videos = content.querySelectorAll('video');
+    videos.forEach(function(v) { v.pause(); });
+
+    if (originalVideo && originalVideo.hasAttribute('autoplay')) {
+      originalVideo.play();
+    }
+    originalVideo = null;
+
+    setTimeout(function() {
+      content.innerHTML = '';
+      carouselItems = [];
+    }, 200);
+  }
+
+  function openImage(img) {
+    content.innerHTML = '<img src="' + img.src + '" alt="' + (img.alt || '') + '">';
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openVideo(video) {
+    originalVideo = video;
+    video.pause();
+
+    var src = video.querySelector('source') ? video.querySelector('source').src : video.src;
+    var enlargedVideo = document.createElement('video');
+    enlargedVideo.src = src;
+    enlargedVideo.controls = true;
+    enlargedVideo.autoplay = true;
+    enlargedVideo.loop = video.loop;
+
+    content.innerHTML = '';
+    content.appendChild(enlargedVideo);
+
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function openCarousel(carouselEl) {
+    var container = carouselEl.querySelector('[id*="carousel"], .carousel__container, [style*="scroll-snap"]');
+    if (!container) container = carouselEl;
+
+    var items = container.querySelectorAll('video, img');
+    if (items.length === 0) return;
+
+    carouselItems = Array.from(items);
+    currentCarouselIndex = Math.round(container.scrollLeft / container.offsetWidth) || 0;
+
+    var carouselHTML = '<div class="media-overlay__carousel">' +
+      '<button class="media-overlay__nav" data-dir="prev" aria-label="Previous">&#10094;</button>' +
+      '<div class="media-overlay__carousel-wrapper">' +
+      '<div class="media-overlay__carousel-container">';
+
+    carouselItems.forEach(function(item) {
+      var isVideo = item.tagName === 'VIDEO';
+      if (isVideo) {
+        var src = item.querySelector('source') ? item.querySelector('source').src : item.src;
+        carouselHTML += '<div class="media-overlay__carousel-item"><video src="' + src + '" controls ' + (item.loop ? 'loop' : '') + '></video></div>';
+      } else {
+        carouselHTML += '<div class="media-overlay__carousel-item"><img src="' + item.src + '" alt="' + (item.alt || '') + '"></div>';
+      }
+    });
+
+    carouselHTML += '</div><div class="media-overlay__dots">';
+    carouselItems.forEach(function(_, i) {
+      carouselHTML += '<button class="media-overlay__dot' + (i === currentCarouselIndex ? ' active' : '') + '" data-index="' + i + '"></button>';
+    });
+    carouselHTML += '</div></div>' +
+      '<button class="media-overlay__nav" data-dir="next" aria-label="Next">&#10095;</button></div>';
+
+    content.innerHTML = carouselHTML;
+
+    var carouselContainer = content.querySelector('.media-overlay__carousel-container');
+    if (carouselContainer) {
+      carouselContainer.scrollLeft = currentCarouselIndex * carouselContainer.offsetWidth;
+    }
+
+    setupCarouselNavigation();
+
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function setupCarouselNavigation() {
+    var container = content.querySelector('.media-overlay__carousel-container');
+    var dots = content.querySelectorAll('.media-overlay__dot');
+
+    function updateDots() {
+      dots.forEach(function(dot, i) {
+        dot.classList.toggle('active', i === currentCarouselIndex);
+      });
+    }
+
+    function goToSlide(index) {
+      currentCarouselIndex = Math.max(0, Math.min(index, carouselItems.length - 1));
+      container.scrollTo({
+        left: currentCarouselIndex * container.offsetWidth,
+        behavior: 'smooth'
+      });
+      updateDots();
+
+      var videos = container.querySelectorAll('video');
+      videos.forEach(function(v) { v.pause(); });
+    }
+
+    content.addEventListener('click', function(e) {
+      var nav = e.target.closest('.media-overlay__nav');
+      if (nav) {
+        e.stopPropagation();
+        if (nav.dataset.dir === 'prev') {
+          goToSlide(currentCarouselIndex - 1);
+        } else {
+          goToSlide(currentCarouselIndex + 1);
+        }
+        return;
+      }
+
+      var dot = e.target.closest('.media-overlay__dot');
+      if (dot) {
+        e.stopPropagation();
+        goToSlide(parseInt(dot.dataset.index));
+        return;
+      }
+    });
+
+    if (container) {
+      container.addEventListener('scroll', function() {
+        var newIndex = Math.round(container.scrollLeft / container.offsetWidth);
+        if (newIndex !== currentCarouselIndex) {
+          currentCarouselIndex = newIndex;
+          updateDots();
+        }
+      });
+    }
+  }
+
+  closeBtn.addEventListener('click', closeOverlay);
+
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay || e.target === content) {
+      closeOverlay();
+    }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (!overlay.classList.contains('active')) return;
+
+    if (e.key === 'Escape') {
+      closeOverlay();
+    } else if (e.key === 'ArrowLeft') {
+      var prevBtn = content.querySelector('.media-overlay__nav[data-dir="prev"]');
+      if (prevBtn) prevBtn.click();
+    } else if (e.key === 'ArrowRight') {
+      var nextBtn = content.querySelector('.media-overlay__nav[data-dir="next"]');
+      if (nextBtn) nextBtn.click();
+    }
+  });
+
+  document.addEventListener('click', function(e) {
+    var target = e.target;
+
+    // Check if inside a carousel
+    var carousel = target.closest('[id*="carousel"], .carousel')?.closest('div[style*="position: relative"], .carousel, div[style*="position:relative"]');
+    if (carousel) {
+      if (target.closest('button')) return;
+      e.preventDefault();
+      openCarousel(carousel);
+      return;
+    }
+
+    // Check for video
+    if (target.tagName === 'VIDEO' || target.closest('video')) {
+      var video = target.tagName === 'VIDEO' ? target : target.closest('video');
+      var postContent = video.closest('.post-content, article, .entry-content');
+      if (postContent || video.dataset.zoomable === 'true') {
+        e.preventDefault();
+        openVideo(video);
+        return;
+      }
+    }
+
+    // Check for image
+    if (target.tagName === 'IMG') {
+      var postContent = target.closest('.post-content, article, .entry-content');
+      if (postContent || target.dataset.zoomable === 'true') {
+        e.preventDefault();
+        openImage(target);
+        return;
+      }
+    }
+  });
+
+  // Touch swipe support
+  var touchStartX = 0;
+
+  overlay.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  overlay.addEventListener('touchend', function(e) {
+    var touchEndX = e.changedTouches[0].screenX;
+    var diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        var nextBtn = content.querySelector('.media-overlay__nav[data-dir="next"]');
+        if (nextBtn) nextBtn.click();
+      } else {
+        var prevBtn = content.querySelector('.media-overlay__nav[data-dir="prev"]');
+        if (prevBtn) prevBtn.click();
+      }
+    }
+  }, { passive: true });
+})();
+</script>
