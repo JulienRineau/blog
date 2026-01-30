@@ -11,7 +11,7 @@ This post presents a world model that predicts how humans manipulate objects fro
 
 *Given the first frame and 16-step action sequence, the model predicts future manipulation frames.*
 
-World models serve two purposes in robotics: enabling policies to plan by simulating candidate actions in imagination, and generating synthetic data to reduce the robot data gap. Accurate simulation of human actions can dramatically cut the need for expensive robot rollouts. 1X Technologies recently validated this approach [^2]: their world model drives real humanoid robots using video diffusion pretrained on internet-scale data, requiring only 70 hours of robot-specific training instead of thousands. This work shows how to steer that knowledge with actions, specifically for human bimanual manipulation of deformable objects.
+Robotics lacks a cheap eval layer. Language has perplexity, vision has classification accuracy, but evaluating a manipulation policy still requires running a real robot or trusting a physics simulator that can't model cloth. Video diffusion models pretrained on internet data already encode useful physical priors, but they generate plausible futures, not controllable ones. This work turns a pretrained video model into an action-conditioned world model for human bimanual manipulation of deformable objects.
 
 ## The Core Insight
 
