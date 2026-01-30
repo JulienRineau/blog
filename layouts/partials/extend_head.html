@@ -167,4 +167,15 @@
 [data-zoomable="true"] {
   cursor: zoom-in;
 }
+
+/* Carousel swipe affordance */
+[id*="carousel"][style*="scroll-snap"],
+.media-overlay__carousel-container {
+  cursor: grab;
+}
+[id*="carousel"][style*="scroll-snap"].dragging,
+.media-overlay__carousel-container.dragging {
+  cursor: grabbing;
+  user-select: none;
+}
 </style>

@@ -153,6 +153,13 @@
           updateDots();
         }
       });
+
+      // Attach swipe/drag to overlay carousel container
+      attachSwipeDrag(container, function() {
+        goToSlide(currentCarouselIndex - 1);
+      }, function() {
+        goToSlide(currentCarouselIndex + 1);
+      });
     }
   }
 
@@ -212,26 +219,93 @@
     }
   });
 
-  // Touch swipe support
-  var touchStartX = 0;
+  // Unified swipe/drag handler for touch and mouse
+  function attachSwipeDrag(el, onPrev, onNext, opts) {
+    var startX = 0;
+    var dragging = false;
+    var wasDragged = false;
+    var threshold = (opts && opts.threshold) || 50;
 
-  overlay.addEventListener('touchstart', function(e) {
-    touchStartX = e.changedTouches[0].screenX;
-  }, { passive: true });
+    // Touch events
+    el.addEventListener('touchstart', function(e) {
+      startX = e.changedTouches[0].screenX;
+      dragging = true;
+      wasDragged = false;
+    }, { passive: true });
 
-  overlay.addEventListener('touchend', function(e) {
-    var touchEndX = e.changedTouches[0].screenX;
-    var diff = touchStartX - touchEndX;
+    el.addEventListener('touchmove', function() {
+      wasDragged = true;
+    }, { passive: true });
 
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) {
-        var nextBtn = content.querySelector('.media-overlay__nav[data-dir="next"]');
-        if (nextBtn) nextBtn.click();
-      } else {
-        var prevBtn = content.querySelector('.media-overlay__nav[data-dir="prev"]');
-        if (prevBtn) prevBtn.click();
+    el.addEventListener('touchend', function(e) {
+      if (!dragging) return;
+      dragging = false;
+      var diff = startX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > threshold) {
+        if (diff > 0) onNext();
+        else onPrev();
       }
+    }, { passive: true });
+
+    // Mouse drag events
+    el.addEventListener('mousedown', function(e) {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      startX = e.screenX;
+      dragging = true;
+      wasDragged = false;
+      el.classList.add('dragging');
+    });
+
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      if (Math.abs(e.screenX - startX) > 5) {
+        wasDragged = true;
+      }
+    });
+
+    document.addEventListener('mouseup', function(e) {
+      if (!dragging) return;
+      dragging = false;
+      el.classList.remove('dragging');
+      var diff = startX - e.screenX;
+      if (Math.abs(diff) > threshold) {
+        if (diff > 0) onNext();
+        else onPrev();
+      }
+    });
+
+    // Prevent click from firing after a drag
+    if (opts && opts.preventClickOnDrag) {
+      el.addEventListener('click', function(e) {
+        if (wasDragged) {
+          e.stopPropagation();
+          e.preventDefault();
+          wasDragged = false;
+        }
+      }, true);
     }
-  }, { passive: true });
+  }
+
+  // Attach swipe/drag to overlay background for slide navigation
+  attachSwipeDrag(overlay, function() {
+    var prevBtn = content.querySelector('.media-overlay__nav[data-dir="prev"]');
+    if (prevBtn) prevBtn.click();
+  }, function() {
+    var nextBtn = content.querySelector('.media-overlay__nav[data-dir="next"]');
+    if (nextBtn) nextBtn.click();
+  });
+
+  // Attach swipe/drag to inline carousels on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    var inlineCarousels = document.querySelectorAll('[id*="carousel"][style*="scroll-snap"]');
+    inlineCarousels.forEach(function(container) {
+      attachSwipeDrag(container, function() {
+        container.scrollBy({ left: -container.offsetWidth, behavior: 'smooth' });
+      }, function() {
+        container.scrollBy({ left: container.offsetWidth, behavior: 'smooth' });
+      }, { preventClickOnDrag: true });
+    });
+  });
 })();
 </script>
