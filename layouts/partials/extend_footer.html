@@ -159,7 +159,7 @@
         goToSlide(currentCarouselIndex - 1);
       }, function() {
         goToSlide(currentCarouselIndex + 1);
-      });
+      }, { stopPropagation: true });
     }
   }
 
@@ -226,8 +226,11 @@
     var wasDragged = false;
     var threshold = (opts && opts.threshold) || 50;
 
+    var stopProp = opts && opts.stopPropagation;
+
     // Touch events
     el.addEventListener('touchstart', function(e) {
+      if (stopProp) e.stopPropagation();
       startX = e.changedTouches[0].screenX;
       dragging = true;
       wasDragged = false;
@@ -250,6 +253,7 @@
     // Mouse drag events
     el.addEventListener('mousedown', function(e) {
       if (e.button !== 0) return;
+      if (stopProp) e.stopPropagation();
       e.preventDefault();
       startX = e.screenX;
       dragging = true;
